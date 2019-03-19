@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tech A Break - Online Portal</title>
+    <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link href="assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/vendor/select2/css/select2.css">
+    <link rel="stylesheet" href="assets/libs/css/style.css">
+    <link rel="stylesheet" href="assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <style>
+        html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+    </style>
+</head>
+
+<body>
+    <form class="splash-container" id="registrationSignUp">
+        <div class="card">
+            <div class="card-header"><img class="logo-img" src="assets/images/logo.png" alt="logo">
+                <h3 class="mb-0 mt-2">Registration Form</h3>
+                <p>Please enter your information.</p>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <select class="select-Drop-Single form-control form-control-lg" required data-parsley-validate-if-empty="true" data-parsley-minSelect="1" data-parsley-required-message="Select your organization.">
+                        <option></option>
+                        <option value="Alabama">Alabama</option>
+                        <option value="Alaska">Alaska</option>
+                        <option value="Melbourne">Melbourne</option>
+                        <option value="Victoria">Victoria</option>
+                        <option value="Newyork">Newyork</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input class="form-control form-control-lg" id="officialemail" type="email" placeholder="Official Email ID" autocomplete="off" required data-parsley-type="email" data-parsley-required-message="Type your official email id.">
+                </div>
+                <div class="form-group">
+                    <input class="form-control form-control-lg" id="password1" type="password" required="" placeholder="Password" data-parsley-required-message="Type your password.">
+                </div>
+                <div class="form-group">
+                    <input class="form-control form-control-lg" data-parsley-equalto="#password1" required="" type="password" placeholder="Confirm Password" data-parsley-required-message="Confirm your password.">
+                </div>
+                <div class="form-group pt-2">
+                    <button class="btn btn-block btn-success" type="submit">Register My Account</button>
+                </div>
+                <div class="form-group">
+                    <label class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox"><span class="custom-control-label">By creating an account, I agree the <a href="#">terms and conditions</a></span>
+                    </label>
+                </div>
+            </div>
+            <div class="card-footer">
+                <p>Already member? <a href="login.html" class="text-secondary">Login Here.</a></p>
+            </div>
+        </div>
+    </form>
+    <script src="assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="assets/vendor/select2/js/select2.min.js"></script>
+    <script src="assets/vendor/parsley/parsley.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#registrationSignUp').parsley();
+            $('.select-Drop-Single').select2({
+                placeholder: "Select Organization",
+                allowClear: true,
+            });
+        });
+
+    </script>
+</body>
+
+</html>

@@ -486,7 +486,7 @@ Parsley Varifation
 
 .parsley-errors-list.filled {
     margin: 0;
-    padding: 7px;
+    padding: 7px 0;
     position: relative;
     /*    background-color: #f96a6a;*/
     color: #f96a6a;
@@ -4719,6 +4719,37 @@ tr.group:hover {
 6.4 Sign up Page
 -------------------------*/
 
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #767890;
+    line-height: 46px;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #d2d2e3;
+    border-radius: 2px;
+}
+
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 46px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 46px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #72748d;
+}
 
 /*-----------------------
 6.5 Forgot Password
