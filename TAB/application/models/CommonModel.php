@@ -51,7 +51,7 @@ class CommonModel extends CI_Model{
 	}
 
 	/**
-     * @package         NTANA
+     * @package         NATANA
      * @author          Chinnu
      * @since           Version 1.0
      * Date:            23-03-2019	 

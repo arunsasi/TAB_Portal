@@ -1,8 +1,9 @@
-
+.gitignore
 assets/.DS_Store
 assets/vendor/.DS_Store
 /TAB/application/config/database.php
 /TAB/application/config/config.php
+/TAB/application/.history/
 .DS_Store
 .DS_Store
 .DS_Store

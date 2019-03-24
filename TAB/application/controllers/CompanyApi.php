@@ -18,7 +18,7 @@ class CompanyApi extends CI_Controller {
 
 	/**
      * CodeIgniter
-     * @package        NTANA
+     * @package        NATANA
  	 * @author          Chinnu
      * @since           Version 1.0
  	 * Date:            23-03-2019
@@ -49,7 +49,7 @@ class CompanyApi extends CI_Controller {
 	
 	/**
      * CodeIgniter
-     * @package        NTANA
+     * @package        NATANA
  	 * @author          Chinnu
      * @since           Version 1.0
  	 * Date:            23-03-2019
@@ -115,7 +115,7 @@ class CompanyApi extends CI_Controller {
 	
 	/**
      * CodeIgniter
-     * @package        NTANA
+     * @package        NATANA
  	 * @author          Chinnu
      * @since           Version 1.0
  	 * Date:            23-03-2019
@@ -135,7 +135,7 @@ class CompanyApi extends CI_Controller {
      
 	/**
      * CodeIgniter
-     * @package        NTANA
+     * @package        NATANA
  	 * @author          Chinnu
      * @since           Version 1.0
  	 * Date:            23-03-2019
@@ -202,7 +202,7 @@ class CompanyApi extends CI_Controller {
     
     /**
      * CodeIgniter
-     * @package        NTANA
+     * @package        NATANA
  	 * @author          Chinnu
      * @since           Version 1.0
  	 * Date:            23-03-2019 
@@ -273,7 +273,7 @@ class CompanyApi extends CI_Controller {
 
 	/**
      * CodeIgniter
-     * @package        NTANA
+     * @package        NATANA
  	 * @author          Chinnu
      * @since           Version 1.0
  	 * Date:            23-03-2019 
