@@ -50,9 +50,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['registration'] = 'CompanyApi/register';
-$route['check_email'] = 'CompanyApi/checkEmail';
+$route['check_email'] = 'CompanyApi/check_email';
 $route['email_verification'] = 'CompanyApi/emailVerification';
-
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';

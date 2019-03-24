@@ -1,12 +1,16 @@
 <?php
 
-class commonModel extends CI_Model{
+class CommonModel extends CI_Model{
 
+    function __construct() {
+        parent::__construct();
+        $this->load->database();
+    }
 
 	public function insertData($table, $data){
 		$this->db->insert($table, $data);
 		if($this->db->affected_rows() > 0){
-			return $this->db->last_insert_id();
+			return $this->db->insert_id();
 		} else {
 			return false;
 		}
@@ -53,10 +57,8 @@ class commonModel extends CI_Model{
      * Date:            23-03-2019	 
 	 * Description: 	Get data from any joined tables
      */	
-    public function selectDataCommon($table, $columns=NULL ,$condtion=NULL )
+    public function selectDataCommon($table, $columns= NULL ,$condtion = NULL,$search_value = NULL,$search_like = NULL,$joins = NULL,$limit = NULL,$where_in = NULL,$where_in_data = NULL,$order_by = NULL)
     {
-        //Getting values for DataTale
-
         $this->db->select($columns,false)->from($table);
         if (is_array($joins) && count($joins) > 0)
         {
@@ -70,8 +72,8 @@ class commonModel extends CI_Model{
             {
                 foreach($condtion as $k => $v)
                 {  
-                     if($v['value'] != '' && $v['value'] != NULL){
-                        $this->db->where($v['key'], $v['value']);
+                     if($v != '' && $v != NULL){
+                        $this->db->where($k, $v);
                      }
                 }
             }
