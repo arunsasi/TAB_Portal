@@ -1,10 +1,19 @@
 jQuery(document).ready(function ($) {
     'use strict';
 
-    if ($("table.first").length) {
+    if ($("table.table-data").length) {
 
         $(document).ready(function () {
-            $('table.first').DataTable();
+            $('table.table-data').DataTable();
+        });
+    }
+
+    if ($("table.table-data-no-order").length) {
+
+        $(document).ready(function () {
+            $('table.table-data-no-order').DataTable({
+                "ordering": false
+            });
         });
     }
 
