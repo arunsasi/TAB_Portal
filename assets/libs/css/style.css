@@ -7013,6 +7013,37 @@ Media Query
 
 
 /* Medium Devices, Desktops */
+@media only screen and (max-width:992px) {
+
+    /*--------- dashboard-influence -------- */
+    .user-social-media {
+        padding: 16px 45px;
+        text-align: center;
+        width: 100%;
+        border-bottom: 1px solid #dee2e6;
+        border-right: transparent !important;
+    }
+
+}
+
+@media only screen and (max-width:1024px) {
+
+    .nav-left-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0px;
+        right: 0px;
+    }
+
+    .navbar-expand-lg .navbar-toggler {
+        display: block;
+    }
+
+    .dashboard-wrapper {
+        margin-left: 0px;
+    }
+}
+
 
 @media only screen and (max-width:992px) {
 
