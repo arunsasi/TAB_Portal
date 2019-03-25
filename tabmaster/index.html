@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="en">
 
- 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>TAB Admin Portal</title>
     <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
-    <link href="../assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/vendor/fonts/circular-std/style.css">
     <link rel="stylesheet" href="../assets/libs/css/style.css">
     <link rel="stylesheet" href="../assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-html5-1.5.6/b-print-1.5.6/fh-3.1.4/r-2.2.2/sc-2.0.0/datatables.min.css" />
+    <link rel="stylesheet" href="../assets/vendor/daterangepicker/daterangepicker.css" />
 </head>
 
 <body>
 
     <div class="dashboard-main-wrapper">
-
         <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
                 <a class="navbar-brand" href="index.html"><img class="logo-img" src="../assets/images/logo.png" alt="Tech A Break"></a>
@@ -41,7 +41,6 @@
                                         <div class="list-group">
                                             <a href="#" class="list-group-item list-group-item-action active">
                                                 <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="../assets/images/avatar-2.jpg" alt="" class="user-avatar-md rounded-circle"></div>
                                                     <div class="notification-list-user-block"><span class="notification-list-user-name">Jeremy Rakestraw</span>accepted your invitation to join the team.
                                                         <div class="notification-date">2 min ago</div>
                                                     </div>
@@ -49,7 +48,6 @@
                                             </a>
                                             <a href="#" class="list-group-item list-group-item-action">
                                                 <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="../assets/images/avatar-3.jpg" alt="" class="user-avatar-md rounded-circle"></div>
                                                     <div class="notification-list-user-block"><span class="notification-list-user-name">
                                                             John Abraham</span>is now following you
                                                         <div class="notification-date">2 days ago</div>
@@ -58,7 +56,6 @@
                                             </a>
                                             <a href="#" class="list-group-item list-group-item-action">
                                                 <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="../assets/images/avatar-4.jpg" alt="" class="user-avatar-md rounded-circle"></div>
                                                     <div class="notification-list-user-block"><span class="notification-list-user-name">Monaan Pechi</span> is watching your main repository
                                                         <div class="notification-date">2 min ago</div>
                                                     </div>
@@ -66,7 +63,6 @@
                                             </a>
                                             <a href="#" class="list-group-item list-group-item-action">
                                                 <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="../assets/images/avatar-5.jpg" alt="" class="user-avatar-md rounded-circle"></div>
                                                     <div class="notification-list-user-block"><span class="notification-list-user-name">Jessica Caruso</span>accepted your invitation to join the team.
                                                         <div class="notification-date">2 min ago</div>
                                                     </div>
@@ -84,8 +80,7 @@
                             <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../assets/images/user.png" alt="" class="user-avatar-md rounded-circle"></a>
                             <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
                                 <div class="nav-user-info">
-                                    <h5 class="mb-0 text-white nav-user-name">
-                                        John Honai</h5>
+                                    <h5 class="mb-0 text-white nav-user-name">John Honai</h5>
                                 </div>
                                 <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
                                 <a class="dropdown-item" href="#"><i class="fas fa-power-off mr-2"></i>Logout</a>
@@ -100,41 +95,33 @@
             <div class="menu-list">
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav flex-column">
-                            <li class="nav-divider">
-                                Menu
-                            </li>
+                            <li class="nav-divider">Menu</li>
                             <li class="nav-item ">
-                                <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false"><i class="fa fa-fw fa-user-circle"></i>Dashboard <span class="badge badge-success">6</span></a>
-
+                                <a class="nav-link" href="index.html"><i class="fas fa-tv"></i>Dashboard</a>
                             </li>
-
-                            <li class="nav-divider">
-                                Settings
-                            </li>
+                            <li class="nav-divider">Settings</li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#configMenu"><i class="fas fas fa-cog"></i>Configuration</a>
+                                <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#configMenu"><i class="fas fas fa-cog"></i>Configuration</a>
                                 <div id="configMenu" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="icon-fontawesome.html">Event</a>
+                                            <a class="nav-link" href="event-configuration.html">Event</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="icon-material.html">Programs</a>
+                                            <a class="nav-link" href="#">Programs</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="icon-simple-lineicon.html">Venues</a>
+                                            <a class="nav-link" href="#">Venues</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="icon-themify.html">Companies</a>
+                                            <a class="nav-link" href="#">Companies</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="icon-flag.html">Judges</a>
+                                            <a class="nav-link" href="#">Judges</a>
                                         </li>
 
                                     </ul>
@@ -148,41 +135,31 @@
 
         <div class="dashboard-wrapper">
             <div class="container-fluid dashboard-content">
-
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 class="pageheader-title">Blank Pageheader </h2>
-                            <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
+                            <h2 class="pageheader-title">Dashboard</h2>
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item active"><a href="#" class="breadcrumb-link">Dashboard</a></li>
-                                        <!--
-<li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Pages</a></li>
-<li class="breadcrumb-item active" aria-current="page">Blank Pageheader</li>
--->
                                     </ol>
                                 </nav>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                        <h3 class="text-left">Content goes here!</h3>
+                    <div class="col-md-12">
+                        Content Here
                     </div>
                 </div>
             </div>
-            <!-- ============================================================== -->
-            <!-- footer -->
-            <!-- ============================================================== -->
             <div class="footer">
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            Copyright © 2019 NATANA.
+                            &copy; 2019 NATANA.
                         </div>
 
                     </div>
@@ -190,12 +167,21 @@
             </div>
 
         </div>
-
     </div>
+
+
+
     <script type="text/javascript" src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script type="text/javascript" src="../assets/vendor/slimscroll/jquery.slimscroll.js"></script>
+    <script type="text/javascript" src="../assets/vendor/parsley/parsley.js"></script>
     <script type="text/javascript" src="../assets/libs/js/main-js.js"></script>
+    <script type="text/javascript" src="../assets/vendor/datatables/js/data-table.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-html5-1.5.6/b-print-1.5.6/fh-3.1.4/r-2.2.2/sc-2.0.0/datatables.min.js"></script>
+
+
 </body>
- 
+
 </html>

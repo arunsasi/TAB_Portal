@@ -295,11 +295,11 @@ select.form-control {
     color: #71748d;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-position: 99% 52%;
+    background-position: 96% 52%;
     background-size: auto;
     background-repeat: no-repeat;
-    background-image: url(/images/down-arrow.png);
-    padding-right: 15px;
+    background-image: url(../../images/down-arrow.png);
+    padding-right: 20px;
     border: 1px solid #d2d2e4;
     border-radius: 2px;
 }
@@ -1233,14 +1233,12 @@ Top Header
     min-height: 60px;
 }
 
-
-
 .navbar-brand {
     display: inline-block;
     margin-right: 1rem;
     line-height: inherit;
     white-space: nowrap;
-    padding: 11px 20px;
+    padding: 8px 20px;
     font-size: 30px;
     text-transform: uppercase;
     font-weight: 700;
@@ -1355,7 +1353,6 @@ Top Header
 }
 
 .notification-list-user-block {
-    padding-left: 50px;
     font-size: 14px;
     line-height: 21px;
 }
@@ -3635,6 +3632,12 @@ btn-link
     border: 1px solid rgba(86, 61, 124, .2);
 }
 
+/*
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+*/
 
 /* -----------------------
 2.6  Notification
