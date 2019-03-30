@@ -1,19 +1,31 @@
 <?php
 
-class commonModel extends CI_Model{
-
-
+class CommonModel extends CI_Model{
+    
+    function __construct() {
+        parent::__construct();
+        $this->load->database();
+    }
 	public function insertData($table, $data){
 		$this->db->insert($table, $data);
 		if($this->db->affected_rows() > 0){
-			return $this->db->last_insert_id();
+			return $this->db->insert_id();
 		} else {
 			return false;
 		}
 	}
-
 	public function updateData($table, $data, $condition){
-		$this->db->where($condition);
+		if($condition != NULL){
+            if (is_array($condition) && count($condition) > 0)
+            {
+                foreach($condition as $k => $v)
+                {  
+                     if($v != '' && $v != NULL){
+                        $this->db->where($k, $v);
+                     }
+                }
+            }
+        }
 		$this->db->update($table, $data);
 		if($this->db->affected_rows() > 0){
 			return true;
@@ -21,9 +33,18 @@ class commonModel extends CI_Model{
 			return false;
 		}
 	}
-
 	public function deleteData($table, $condition){
-		$this->db->where($condition);
+		if($condition != NULL){
+            if (is_array($condition) && count($condition) > 0)
+            {
+                foreach($condition as $k => $v)
+                {  
+                     if($v != '' && $v != NULL){
+                        $this->db->where($k, $v);
+                     }
+                }
+            }
+        }
 		$this->db->delete($table);
 		if($this->db->affected_rows() > 0){
 			return true;
@@ -31,32 +52,17 @@ class commonModel extends CI_Model{
 			return false;
 		}
 	}
+    /**
+     * Get data from any joined tables.
+ 	 * @author          Chinnu
+     * @since           Version 1.0.0
+     * @param string $table table name required
+     * @return array  lisr array
+     * Date:            23-03-2019
+     */
 
-	public function selectData($table, $fields, $condition, $sort=NULL, $order=NULL, $offset=NULL, $limit=NULL){
-		if($sort != NULL && $order != NULL){
-			$this->db->order_by($sort, $order);
-		}
-		if($offset!=NULL && $limit!=NULL){
-			$this->db->limit($offset, $limit);
-		}
-
-		$this->db->select($fields);
-		$this->db->from($table);
-		$res = $this->db->get();
-		return $res->result();
-	}
-
-	/**
-     * @package         NATANA
-     * @author          Chinnu
-     * @since           Version 1.0
-     * Date:            23-03-2019	 
-	 * Description: 	Get data from any joined tables
-     */	
-    public function selectDataCommon($table, $columns=NULL ,$condtion=NULL )
+    public function selectDataCommon($table, $columns= NULL ,$condition = NULL,$search_value = NULL,$search_like = NULL,$order_by = NULL,$limit = NULL,$joins = NULL,$where_in = NULL,$where_in_data = NULL)
     {
-        //Getting values for DataTale
-
         $this->db->select($columns,false)->from($table);
         if (is_array($joins) && count($joins) > 0)
         {
@@ -65,13 +71,13 @@ class commonModel extends CI_Model{
                 $this->db->join($v['table'], $v['condition'], $v['jointype']);
             }
         }
-        if($condtion != NULL){
-            if (is_array($condtion) && count($condtion) > 0)
+        if($condition != NULL){
+            if (is_array($condition) && count($condition) > 0)
             {
-                foreach($condtion as $k => $v)
+                foreach($condition as $k => $v)
                 {  
-                     if($v['value'] != '' && $v['value'] != NULL){
-                        $this->db->where($v['key'], $v['value']);
+                     if($v != '' && $v != NULL){
+                        $this->db->where($k, $v);
                      }
                 }
             }
@@ -103,5 +109,3 @@ class commonModel extends CI_Model{
         return $query->result_array();
     }
 }
-
-?>

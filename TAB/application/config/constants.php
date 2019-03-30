@@ -88,6 +88,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 | Custom Constents
 */
 //Roles
+define('ADMIN', 1);
 define('USER', 2); 
 //User Status
 define('EMAIL_NOT_VERIFIED', 0);

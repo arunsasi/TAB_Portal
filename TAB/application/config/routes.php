@@ -53,6 +53,10 @@ $route['registration'] = 'CompanyApi/register';
 $route['check_email'] = 'CompanyApi/checkEmail';
 $route['email_verification'] = 'CompanyApi/emailVerification';
 
+$route['user/(:num)'] = 'User/getData/$1';
+$route['userlist'] = 'User/list';
+$route['userstore'] = 'User/store';
+$route['userupdate/(:num)'] = 'User/edit/$1';
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
