@@ -17,7 +17,7 @@ class CompanyApi extends CI_Controller
     }
     /**
      * Login.
- 	 * @author          Chinnu
+     * @author          Chinnu
      * @since           Version 1.0.0
      * @param NULL
      * @return string 
@@ -60,9 +60,9 @@ class CompanyApi extends CI_Controller
 
     /**
      * Check- Email already Exist.
- 	 * @author          Chinnu
+     * @author          Chinnu
      * @since           Version 1.0
- 	 * @param NULL
+     * @param NULL
      * @return string
      * Date:            23-03-2019.
      */
@@ -94,11 +94,11 @@ class CompanyApi extends CI_Controller
 
     /**
      * User registration
- 	 * @author          Chinnu
+     * @author          Chinnu
      * @since           Version 1.0
      * @param NULL
      * @return string
- 	 * Date::            23-03-2019
+     * Date:            23-03-2019
      */
 
     public function register()

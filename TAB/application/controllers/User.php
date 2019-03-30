@@ -18,7 +18,7 @@ class User extends CI_Controller
 
     /**
      * User list.
- 	 * @author          Chinnu
+     * @author          Chinnu
      * @since           Version 1.0.0
      * @param NULL
      * @return string  user list
@@ -76,7 +76,7 @@ class User extends CI_Controller
     }
     /**
      * Save new user data.
- 	 * @author          Chinnu
+     * @author          Chinnu
      * @since           Version 1.0.0
      * @param NULL
      * @return string
@@ -119,7 +119,7 @@ class User extends CI_Controller
 
      /**
      * Update user data.
- 	 * @author          Chinnu
+     * @author          Chinnu
      * @since           Version 1.0.0
      * @param int $id
      * @return string
@@ -153,8 +153,8 @@ class User extends CI_Controller
     }
 
     /**
-     * Delete user data.
- 	 * @author          Chinnu
+     * Delete user data
+     * @author          Chinnu
      * @since           Version 1.0.0
      * @param int $id
      * @return string
@@ -166,7 +166,7 @@ class User extends CI_Controller
         $result = array('status' => false, 'msg' => 'Something went wrong.');
         if ($id) {
             $condtion           = ['id' => $id];
-            //user data insertion......
+            //user data deletion......
             $details = $this->commonModel->deleteData('users', $condtion);
             if ($details) {
                 $result = array('status' => true);
