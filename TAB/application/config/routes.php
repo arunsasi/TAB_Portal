@@ -53,6 +53,8 @@ $route['registration'] = 'CompanyApi/register';
 $route['check_email'] = 'CompanyApi/checkEmail';
 $route['email_verification'] = 'CompanyApi/emailVerification';
 
+$route['login_check'] = 'CompanyApi/login';
+
 $route['user/(:num)'] = 'User/getData/$1';
 $route['userlist'] = 'User/list';
 $route['userstore'] = 'User/store';
