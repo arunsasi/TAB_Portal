@@ -32,10 +32,10 @@ class CompanyApi extends CI_Controller
         if ($this->form_validation->run() == false) {
                 $result = array('status' => false, 'error' => $this->form_validation->error_array());
             } else {
-                $data['email'] = trim($this->input->post('email'));
-                $data['password'] = md5($this->input->post('password'));
+                $email = trim($this->input->post('email'));
+                $password = md5($this->input->post('password'));
                 $columns    = 'id,name,role_id,status';
-                $condtion   = ['email' => $email];
+                $condtion   = ['email' => $email, 'password' => $password];
                 $user = $this->commonModel->selectDataCommon('users', $columns, $condtion);
                 if (!empty($user)) {
                         foreach ($user as $row) {
@@ -47,12 +47,34 @@ class CompanyApi extends CI_Controller
                         if ($useStatus == BLOCKED || $useStatus == DELETED) {
                                 $result = array('status' => false, 'msg' => 'Something went wrong.');
                             } else {
+                                $checked = $this->input->post('rememberme');
+
+                                if ($checked == 1) {            
+                                    setcookie('email', $email, time() + 3600 * 24 * 30, '/'); // Expires in a month.
+                                    setcookie('password', $this->input->post('password'), time() + 3600 * 24 * 30, '/');
+                                    setcookie('rememberme', $checked, time() + 3600 * 24 * 30, '/');
+                                }
+                                else
+                                {
+                                    $expire = time() - 300;
+                                    setcookie("email", '', $expire, '/');
+                                    setcookie("password", '', $expire, '/');  
+                                    setcookie("rememberme", '', $expire, '/');
+
+                                }
+
+
+
                                 if ($roleId == ADMIN) {
                                         $result = array('status' => true, 'msg' => 'Success', 'url' => '');
                                     } elseif ($roleId == USER) {
                                         $result = array('status' => true, 'msg' => 'Success', 'url' => '');
                                     }
                             }
+                    }
+                    else
+                    {
+                        $result = array('status' => true, 'msg' => 'Invalid credentials', 'url' => '');
                     }
             }
         echo json_encode($result);
