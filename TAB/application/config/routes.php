@@ -54,11 +54,13 @@ $route['check_email'] = 'CompanyApi/checkEmail';
 $route['email_verification'] = 'CompanyApi/emailVerification';
 
 $route['login_check'] = 'CompanyApi/login';
+$route['check_session'] = 'CompanyApi/check_session';
+$route['logout'] = 'CompanyApi/logout';
 
 $route['user/(:num)'] = 'User/getData/$1';
 $route['userlist'] = 'User/list';
 $route['userstore'] = 'User/store';
-$route['userupdate/(:num)'] = 'User/edit/$1';
+$route['userupdate'] = 'User/edit';
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';

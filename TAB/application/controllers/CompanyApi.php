@@ -37,9 +37,9 @@ class CompanyApi extends CI_Controller
                 $columns    = 'id,name,role_id,status';
                 $condtion   = ['email' => $email, 'password' => $password];
                 $user = $this->commonModel->selectDataCommon('users', $columns, $condtion);
-                if (!empty($user)) {
-                        foreach ($user as $row) {
-                                $userCode = $row['name'];
+                if ($user->num_rows()>0) {
+                        foreach ($user->result_array() as $row) {
+                                $userName = $row['name'];
                                 $roleId = $row['role_id'];
                                 $useStatus = $row['status'];
                                 $userId = $row['id'];
@@ -47,39 +47,95 @@ class CompanyApi extends CI_Controller
                         if ($useStatus == BLOCKED || $useStatus == DELETED) {
                                 $result = array('status' => false, 'msg' => 'Something went wrong.');
                             } else {
-                                $checked = $this->input->post('rememberme');
-
-                                if ($checked == 1) {            
-                                    setcookie('email', $email, time() + 3600 * 24 * 30, '/'); // Expires in a month.
-                                    setcookie('password', $this->input->post('password'), time() + 3600 * 24 * 30, '/');
-                                    setcookie('rememberme', $checked, time() + 3600 * 24 * 30, '/');
-                                }
-                                else
-                                {
-                                    $expire = time() - 300;
-                                    setcookie("email", '', $expire, '/');
-                                    setcookie("password", '', $expire, '/');  
-                                    setcookie("rememberme", '', $expire, '/');
-
-                                }
-
-
-
+                                $newdata = array(
+                                        'userName' => $userName,
+                                        'roleId' => $roleId,
+                                        'useStatus' => $useStatus,
+                                        'userId' => $userId,
+                                );
+                                $this->session->set_userdata($newdata); 
                                 if ($roleId == ADMIN) {
-                                        $result = array('status' => true, 'msg' => 'Success', 'url' => '');
+                                        $result = array('status' => true, 'msg' => 'Success', 'url' => FRONT_END_USER_URL.'index.html');
                                     } elseif ($roleId == USER) {
-                                        $result = array('status' => true, 'msg' => 'Success', 'url' => '');
+                                        $result = array('status' => true, 'msg' => 'Success', 'url' => FRONT_END_USER_URL.'index.html');
                                     }
                             }
                     }
                     else
                     {
-                        $result = array('status' => true, 'msg' => 'Invalid credentials', 'url' => '');
+                        $result = array('status' => false, 'msg' => 'Invalid credentials'
+                    );
                     }
             }
         echo json_encode($result);
     }
 
+     /**
+     * check current user login status.
+     * @author          Chinnu
+     * @since           Version 1.0.0
+     * @param NULL
+     * @return string 
+     * Date:            07-04-2019
+     */
+    public function check_session()
+    {
+        $url = $this->input->post('url');
+        $useStatus = $this->session->userdata('useStatus');
+        $roleId = $this->session->userdata('roleId');
+        $userName = $this->session->userdata('userName');
+        $array = array('role-id' =>$roleId,'user-name'=>$userName);
+        $checkUrls = array('login','forgot-password','sign-up');
+        $notLogedInUserUrl = false;
+        foreach($checkUrls as $check)
+        {
+            $pattern = '/('.$check.')/';
+            preg_match($pattern, $url, $matches);
+            if(!empty($matches))
+            {
+                $notLogedInUserUrl = true;
+                break;
+            }
+            
+        }
+
+        if ($roleId == NULL && $notLogedInUserUrl) 
+        {
+            $result = array('status' => true, 'msg' => 'Valid Access1', 'data' => $array);
+        }
+        elseif ( $roleId == NULL && !$notLogedInUserUrl) 
+        {
+            $result = array('status' => false, 'msg' => 'Invalid Access', 'url' =>FRONT_END_URL.'login.html');
+        }
+        elseif ( !$notLogedInUserUrl) 
+        {
+            $result = array('status' => true, 'msg' => 'Valid Access2', 'data' => $array);
+        }
+        elseif ($notLogedInUserUrl) {
+            $result = array('status' => false, 'msg' => 'Invalid Access', 'url' =>FRONT_END_USER_URL.'index.html');
+        }
+        else
+        {
+            $result = array('status' => false, 'msg' => 'Invalid Access', 'url' =>FRONT_END_URL.'login.html');
+        }
+        echo json_encode($result);
+
+    }
+     /**
+     * Logout.
+     * @author          Chinnu
+     * @since           Version 1.0.0
+     * @param NULL
+     * @return string 
+     * Date:            07-04-2019
+     */
+    public function logout()
+    {
+        $array_items = array('userName','roleId','useStatus','userId');
+        $this->session->unset_userdata($array_items);
+        $result = array('status' => true, 'url' =>FRONT_END_URL.'login.html');
+        echo json_encode($result);
+    } 
     /**
      * Check- Email already Exist.
      * @author          Chinnu

@@ -25,9 +25,26 @@ var parse_JSON = function (data) {
     }
 
 };
-
+var update_part = function ($target, $elem) {
+    $.ajax({
+        type: "POST",
+        url: $target,
+        success: function (data) {
+            $($elem).html(data);
+        },
+        error: function () {
+            return false;
+        }
+    });
+};
+var hideAlertFormCommon = function ($form) {
+   // $.magnificPopup.close();
+};
+var hideProgressModal = function () {
+   // $.magnificPopup.close();
+};
 var alertFormCommon = function ($str, $form) {
-
+    hideProgressModal();
     $("#alert-modal .message").html($str);
 };
 
@@ -38,7 +55,7 @@ var form_basic_reload = function (response, form, submit_btn) {
     } else if (response.status === "success") {
         alertFormCommon(response.message, form);
         $(form)[0].reset();
-        page_refresh();
+        window.location.reload();
     }
     submit_btn.removeAttr("disabled");
 };
@@ -62,7 +79,7 @@ var form_basic_redirect = function (response, form, submit_btn) {
         alertFormCommon(response.message, form);
         $(form)[0].reset();
         var redirect_url = $(form).find("input.callback-path").val();
-        page_redirect(redirect_url);
+        window.location = redirect_url;
     }
     submit_btn.removeAttr("disabled");
 };
@@ -72,12 +89,14 @@ var form_url_redirect = function (response, form, submit_btn) {
     if (response.status === true) {
         submit_btn.removeAttr("disabled");
         $(form)[0].reset();
-        page_redirect(response.url);
+        window.location = response.url;
     }
     
 };
 
 var remeberme_cookie = function (response, form) {
+
+    
     if (response.status === true) {
         if ($(form).hasClass('remember_me'))
         {
@@ -119,7 +138,7 @@ var check_session = function ()
             && typeof response.url !== 'undefined' 
             && response.url !=='')
             {
-                page_redirect(response.url);
+                window.location = response.url;
             }
             else if(typeof response.data !== 'undefined')
             {
@@ -129,6 +148,7 @@ var check_session = function ()
                 });
                 var $div = $(div).appendTo('body');
             }
+            		
         },
         error: function (data) {  
 
@@ -143,17 +163,18 @@ var check_session = function ()
 		$('.loader-container').show();
         $('.loader-back').show();
     }
-			   
+                   
+				   
 	function hideLoader()
     {
         $('.loader-container').hide();
         $('.loader-back').hide();
     }
 
-	/** loader function ends **/	
+
+						/** loader function ends **/	
 $(document).ready(function () {
     check_session();
-   
     /*
      * Just add the .form-common class on the form you want to submit
      * define the method and action
@@ -163,7 +184,7 @@ $(document).ready(function () {
    
     $(document).on('submit', '.form-common', function (e) {
         e.preventDefault();
-        showLoader();
+		showLoader();
         var form = this;
         var form_id = $(form).attr('id');
         var method = $(form).attr('method');
@@ -192,6 +213,7 @@ $(document).ready(function () {
 			action = action+'?page='+page;
 		} 
 
+        hideAlertFormCommon(form);
         submit_btn.attr('disabled', 'disabled');
         reset_btn.attr('disabled', 'disabled');
         submit_btn.html('Please wait..');
@@ -219,23 +241,23 @@ $(document).ready(function () {
 					{
 						form_url_redirect(response, form, submit_btn);
                     }
-					if (typeof response.msg !== 'undefined' )
+					if (typeof response.message !== 'undefined' )
 					{ 
-                            
-                        $(".alert").fadeIn('fast');
-                        $(".alert").addClass('alert-success').removeClass('alert-danger');
-                        $(".alert").html(response.msg);
-                        $('.alert').delay(10000).fadeOut(2500); 
-                        //$('#editModelDiv').modal('hide');
+                        $("#msg").fadeIn('fast');
+                        $("#msg").addClass('alert-success').removeClass('alert-danger');
+                        $("#msg").html('Saved Successfully.');
+                        $('#msg').delay(1000).fadeOut(2500);
+                        $('#deleteRecord').modal('hide');
+                        $('#activateRecord').modal('hide');
                         if (response.reset == true)
                         {
                             form.reset();
                         }if (response.reload == true)
                         {   //alert();
-                            page_refresh();
+                            window.location.reload();
                         }if ($(form).hasClass('reload'))
                         {   //alert();
-                            page_refresh();
+                            window.location.reload();
                         }
 					}
                     if (response.refresh == true)
@@ -246,23 +268,21 @@ $(document).ready(function () {
 				}
 				else if(response.status==false)
 				{ 
-					if (typeof response.error !== 'undefined' )
+					if (typeof response.message !== 'undefined' )
 					{
-                        $.each(response.error, function (key, val) {
-                            var msg = '<ul class="parsley-errors-list filled" ><li class="parsley-required">'+val+'</li></ul>'
-                            $('.'+key+'-div').append(msg);
-                           
-                        });
-					}else if (typeof response.msg !== 'undefined' ){
-                            $(".alert").fadeIn('fast');
-                            $(".alert").addClass('alert-danger').removeClass('alert-success');
-                            $(".alert").html(response.msg);
-                            $('.alert').delay(1000).fadeOut(2500); 
 
-                        
+                        $("#msg").fadeIn('fast');
+                        $("#msg").addClass('alert-danger').removeClass('alert-success');
+                        $("#msg").html(response.message);
+                        $('#msg').delay(1000).fadeOut(2500); 
+					}else{
+                        $("#msg").fadeIn('fast');
+                        $("#msg").addClass('alert-danger').removeClass('alert-success');
+                        $("#msg").html('Something went wrong.');
+                        $('#msg').delay(1000).fadeOut(2500); 
                     }
                      if (response.reset != false)
-                        {alert()
+                        {
                             form.reset();
                         }
                     if (response.refresh == true)
@@ -334,6 +354,213 @@ $(document).ready(function () {
 
         return false;
     });
+	
+	
+	$(document).on('submit', '.form-upload', function (e) {
+        e.preventDefault();
+        var form = this;
+        
+        if($(form).hasClass('tinymce')){
+            tinyMCE.triggerSave();
+        }
+
+        var form = this;
+        var form_id = $(form).attr('id');
+        var method = $(form).attr('method');
+        var action = $(form).attr('action');
+        var name = $(form).attr('name');
+        var callback = $(form).find("input.callback");
+        var arg     = $(form).find("input.arg").val();
+        var datastring = new FormData(this);
+        var submit_btn = $(form).find('button[type=submit]');
+        var submit_btn = $(form).find('button[type=submit]');
+        var reset_btn = $(form).find('button[type=reset]');
+        var page_reset = $(form).attr('page-reset');
+        console.log('formname'+name);
+
+        if (callback.length > 0) {
+            callback = callback.val();
+        } else {
+            callback = false;
+        }
+
+        var page = $("#pageno").val();
+        if (typeof page !== 'undefined' )
+        {
+            if (typeof pageReset !== typeof undefined && pageReset !== 'false')
+            {
+                page = 1;
+                $("#pageno").val(page);
+            }
+            action = action+'?page='+page;
+        } 
+
+        hideAlertFormCommon(form);
+        submit_btn.attr('disabled', 'disabled');
+        reset_btn.attr('disabled', 'disabled');
+        submit_btn.html('Please wait..');
+
+        $( form ).find(".form-control").removeClass("red_border");
+        $( form ).find(".form-control").removeClass("text-danger");
+        $( form ).find("span.error").empty();
+
+        $.ajax({
+            type: method,
+            url: action,
+            data: datastring,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                //var response = parse_JSON(data);
+				var response = data;
+                if(response.status==true)
+                {
+                     
+                    if (typeof response.html !== 'undefined' )
+                    {
+                        $('#list').html(response.html);
+                        totalcount = $("#list_count").val();
+                        if (totalcount == null){ totalcount = 0; }
+                        $("#totalcount").html('('+totalcount+')');
+                    }
+                    if (typeof response.message !== 'undefined' )
+                    { 
+                        $("#msg").fadeIn('fast');
+                        $("#msg").addClass('alert-success').removeClass('alert-danger');
+                        $("#msg").html('Saved Successfully.');
+                        if (form_id == "enquiry_form")
+                        {
+                            $("#msg").append('<button type="button" class="close" onclick="$(\'.alert\').hide();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+                        }
+                        else
+                        {
+                            $('#msg').delay(1000).fadeOut(2500);
+                        }
+
+
+                        /*$( form ).find(".message").addClass("alert");
+                        $( form ).find(".message").addClass("alert-success");
+                        $( form ).find('.message').html(response.message);
+
+                        setTimeout(function() {
+                            $( form ).find(".message").empty();
+                            $( form ).find(".message").removeClass("alert-success");
+                            $( form ).find(".message").removeClass("alert");
+                            $('#deleteRecord').modal('hide');
+                            $('#activateRecord').modal('hide');
+                        }, 3000);*/
+                        if (response.reset == true)
+                        {
+                            form.reset();
+                        }if (response.reload == true)
+                        {   //alert();
+                            window.location.reload();
+                        }if ($(form).hasClass('reload'))
+                        {   //alert();
+                            window.location.reload();
+                        }
+
+                        
+                    }
+                    if (response.refresh == true)
+                    {
+                        $('.listing').submit();
+                    }
+                    
+                }
+                else if(response.status==false)
+                { 
+                    
+
+                    if (typeof response.message !== 'undefined' )
+                    {
+
+                        $("#msg").fadeIn('fast');
+                        $("#msg").addClass('alert-danger').removeClass('alert-success');
+                        $("#msg").html('Something went wrong.');
+                        $('#msg').delay(1000).fadeOut(2500);
+
+                        /*$( form ).find(".message").addClass("alert");
+                        $( form ).find(".message").addClass("alert-danger");
+                        $( form ).find('.message').html(response.message);
+                        $( form ).find('.message').html(response.message);
+                        setTimeout(function() {
+                            $( form ).find(".message").empty();
+                            $( form ).find(".message").removeClass("alert-danger");
+                            $( form ).find(".message").removeClass("alert");
+                        }, 3000);*/
+                    }
+                     if (response.reset != false)
+                        {
+                            form.reset();
+                        }
+                    if (response.refresh == true)
+                    {
+                        $('.listing').submit();
+                    }
+                    
+                }
+                else
+                {
+                    //alertFormCommon("Result Error");
+                }
+                submit_btn.removeAttr("disabled");
+                reset_btn.removeAttr("disabled");
+                submit_btn.html('Submit');
+                $(form).removeAttr('page-reset');
+                 if (callback) { //show_helpdesk_listing(response, form, submit_btn);
+                    if(arg == 0){
+                        window[callback]();
+                    }else{
+                        window[callback](response, form, submit_btn);
+                    }
+                } 
+            },
+            error: function (data) {  
+
+                $("#msg").fadeIn('fast');
+                $("#msg").addClass('alert-danger').removeClass('alert-success');
+                $("#msg").html('Validation Error.');
+                $('#msg').delay(1000).fadeOut(2500);
+
+                /*$( form ).find(".message").addClass("alert");
+                        $( form ).find(".message").addClass("alert-danger");
+                        $( form ).find('.message').html("Validation error");
+
+                        setTimeout(function() {
+                            $( form ).find(".message").empty();
+                            $( form ).find(".message").removeClass("alert-danger");
+                            $( form ).find(".message").removeClass("alert");
+                        }, 3000);*/
+
+                $.each(data.responseJSON.errors, function (i) {
+
+                    $.each(data.responseJSON.errors, function (key, val) {
+                       /*$("#"+form_id+" #"+key).addClass("red_border");
+                       $("#"+form_id+" #"+key).addClass("text-danger");
+                       $("#"+form_id+" #"+key+'_err').html(val);*/
+
+
+                        $( form ).find("#"+key).addClass("red_border");
+                        $( form ).find("#"+key).addClass("text-danger");
+                        $( form ).find("#"+key+'_err').html(val);
+                       
+                    });
+                });
+                submit_btn.removeAttr("disabled");
+                reset_btn.removeAttr("disabled");
+                submit_btn.html('Submit');
+                $(form).removeAttr('page-reset');
+            }
+        });
+
+        return false;
+    });
+	
+	$(document).on('click', '.popup-modal-dismiss', function (e) {
+        //$.magnificPopup.close();
+    });
 
     $(document).on('click', 'button[type="reset"]', function (e) {
         var form = $(this).closest("form");
@@ -341,44 +568,42 @@ $(document).ready(function () {
         $( form ).find(".form-control").removeClass("text-danger");
         $( form ).find("span.error").empty();
     });
-    
-    
-});
-$('#editModelDiv').on('hidden.bs.modal', function (e) {
-    page_refresh()
-  })
-function editModelForm(id, url, model)
-{
-    var method = 'post';
-    var action = apiUrl + url+'/'+id;
-    var datastring = {
-        id : id
-    };
+	
+  $('body').on('click', '.first .pagination a', function(e) {
+                e.preventDefault();
 
-    $.ajax({
-        type: method,
-        url: action,		
-        dataType: "json",
-        success: function (data) {
-            
-            var response = data;
-            
-            if(response.status==true)
-            {
-                if(typeof response.data !== 'undefined')
-                {
-                    $.each(response.data, function (key, val) {
-                        $('#'+key).val(val);
-                    });
-                    $('#editModelDiv').modal('show');
-                }
-            }
-        }
+
+                var pagination = $(this).attr('href');
+				var fields = pagination.split('?page=');
+
+				var url = fields[0];
+				var page = fields[1];
+				$("#pageno").val(page);
+				$('.listing').submit();
+            });
+	
+	 		
+	$('body').on('click', '.second .pagination a', function(e) {
+                e.preventDefault();
+
+				  var pagination = $(this).attr('href');
+				var fields = pagination.split('?page=');
+
+				var url = fields[0];
+				var page = fields[1];
+				$("#pageno").val(page); 
+				$('.listing2').submit();
+            }); 
+  
+	$('.listing').submit();
+    //If you need to reset pageno of a listing page on an element click (for eg. find button), add a class "reset-pageno" to the element
+    $('.reset-pageno').on('click', function() {
+        $('.listing').attr('page-reset', 'true');
     });
-}
+});
 
 
-
+   
 function ressetListForm()
 {
     document.forms["form-common"].reset();
@@ -429,8 +654,6 @@ $(function() {
     if(roleId==1)
     {
         $('#nav-menu-session').load('./includes/adminnav.html');
-        
-    $('#current-user').val('hhhhh');
     }
     else if(roleId==2)
     {
@@ -442,12 +665,3 @@ $(function() {
     }
     
 });
-function onNewMainContent() { 
-    alert(111);
-    var currentUser = $('#user-name').val();
-    var currentUser1 = $('#current-user').val();
-    alert(currentUser1)
-    $('#current-user').html(currentUser);
-
-}
-

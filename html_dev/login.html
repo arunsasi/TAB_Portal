@@ -31,7 +31,7 @@
         <div class="card ">
             <div class="card-header text-center"><img class="logo-img" src="assets/images/logo.png" alt="Tech A Break"><span class="splash-description">Please enter your user information.</span></div>
             <div class="card-body">
-                <form id="loginForm" class="form-common remember_me" action="http://localhost/natanahtml/TAB/index.php/login_check" method="post" data-parsley-validate>
+                <form id="loginForm" class="form-common remember_me" action="login_check" method="post" data-parsley-validate>
                     <div class="form-group">
                         <input class="form-control form-control-lg" id="officialemail" name="email" type="email" placeholder="Official Email ID" autocomplete="off"  required data-parsley-type="email" data-parsley-required-message="Type your official email id.">
                     </div>
@@ -54,6 +54,7 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" id="hdnSession" data-value="@Request.RequestContext.HttpContext.Session['userId']" />
     </div>
     <script src="assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
