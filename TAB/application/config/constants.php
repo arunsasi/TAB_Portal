@@ -87,6 +87,8 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 /*
 | Custom Constents
 */
+define('FRONT_END_URL', 'http://localhost/natanahtml/html_dev/');
+define('FRONT_END_USER_URL', 'http://localhost/natanahtml/html_dev/tabmaster/');
 //Roles
 define('ADMIN', 1);
 define('USER', 2); 

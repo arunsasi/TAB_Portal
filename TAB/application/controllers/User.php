@@ -27,20 +27,79 @@ class User extends CI_Controller
 
     public function list()
     {
-        $columns        = 'id,name,role_id,status';
-        $condtion       = ['status !=' => DELETED];
+        $draw = intval($this->input->get("draw"));
+        $start = intval($this->input->get("start"));
+        $length = intval($this->input->get("length"));
+        $roleId = intval($this->input->get("role"));
+        
+        $columns        = 'users.id,users.name,roles.name as role,users.status,phone_no,organization';
+        $condtion       = ['users.status !=' => DELETED, 'users.role_id' => $roleId];
         $search_value   = null;
         $search_like    = null;
 
-        $search_keywords    = $this->input->post('search_keywords');
+        $search_keywords    = $this->input->get('search[value]');
         if (isset($search_keywords) && !empty($search_keywords)) {
             $search_value = $search_keywords;
-            $search_like = array('name');
+            $search_like = array('users.name','roles.name','users.status','phone_no','organization','users.id');
         }
 
-        $users = $this->commonModel->selectDataCommon('users', $columns, $condtion, $search_value, $search_like);
-        $result = array('success' => true, 'list' => $users);
-        echo json_encode($result);
+        
+
+        $joins = array(
+            array(
+            'table' => 'roles',
+            'condition' => 'roles.id=users.role_id',
+            'jointype' => 'FULL'
+            )
+        );
+
+        
+        $totalUsers = $this->commonModel->selectDataCommon('users', 'users.id', $condtion, $search_value, $search_like,$order_by = NULL,$limit = NULL ,$joins);
+        $iTotalRecords = $totalUsers->num_rows();
+
+        $orderColumn = intval($this->input->get("order[0][column]"));
+        $orderDir = $this->input->get("order[0][dir]");
+        if (isset($orderColumn) && !empty($orderColumn)) {
+            
+            $search_like = array(1 => 'users.name', 2 => 'roles.name', 3 =>'phone_no', 4 => 'organization',5 =>'users.status');
+            $order_by['key'] = $search_like[$orderColumn];
+            $order_by['type'] = $orderDir;
+        }
+        else 
+        {
+            $order_by = NULL;
+        }
+        $limit = array('start' => $start , 'length' => $length);
+        $users = $this->commonModel->selectDataCommon('users', $columns, $condtion, $search_value, $search_like,$order_by,$limit ,$joins);
+
+        $data = array();
+        $i = 1;
+        if ($users->num_rows()>0) {
+            foreach($users->result_array() as $r) {
+
+                $data[] = array(
+                    $i++,
+                    $r['name'],
+                    $r['role'],
+                    $r['phone_no'],
+                    $r['organization'],
+                    $r['status'],
+                    $r['id']           
+                );
+            }
+        }
+
+        $output = array(
+            "draw" => $draw,
+            "recordsTotal" => $iTotalRecords,
+            "recordsFiltered" => $iTotalRecords,
+            "data" => $data
+        );
+       echo json_encode($output);
+
+
+        //$result = array('success' => true, 'list' => $users);
+        //echo json_encode($result);
     }
     /**
      * Get A single entry
@@ -52,7 +111,7 @@ class User extends CI_Controller
      */
     public function getData($id)
     {
-        $columns        = 'users.id,users.name,email,role_id,users.status,roles.name as role';
+        $columns        = 'users.id,users.name,email,phone_no,role_id,users.status,roles.name as role';
         $condtion       = ['users.id' => $id, 'users.status !=' => DELETED];
         $joins = array(
                 array(
@@ -63,15 +122,21 @@ class User extends CI_Controller
             );
         $limit = array('start' => 0 , 'length' => 1);
         $users = $this->commonModel->selectDataCommon('users', $columns, $condtion,$search_value = NULL,$search_like = NULL,$order_by = NULL,$limit,$joins);
-        /* if (!empty($users)) {
-            foreach ($users as $row) {
-                $userCode   = $row['name'];
-                $roleId     = $row['role_id'];
-                $useStatus  = $row['status'];
-                $userId     = $row['id'];
+
+        $data = array();
+        if ($users->num_rows()>0) {
+            foreach ($users->result_array() as $row) {
+                //hint => key - id in modelForm
+                $data = array(
+                    'userid'   => $row['id'],
+                    'memberName' => $row['name'],
+                    'contact_no'  => $row['phone_no'],
+                    'email'     => $row['email']       
+                );
+
             }
-        } */
-        $result = array('success' => true, 'list' => $users);
+        }
+        $result = array('status' => true, 'data' => $data);
         echo json_encode($result);
     }
     /**
@@ -126,28 +191,37 @@ class User extends CI_Controller
      * Date::            30-03-2019
      */
 
-    public function edit($id)
+    public function edit()
     {
-        $this->load->library('MY_Form_validation');
-        $this->form_validation->set_rules('name', 'Name', 'required|strip_tags');
-        $this->form_validation->set_rules('contact_no', 'Mobile', 'required|strip_tags');
-        $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|edit_unique[users.email.'.$id.']', array(
-            'required'      => 'You have not provided a valid %s.',
-        ));
-        if ($this->form_validation->run() == false) {
-            $result = array('status' => false, 'error' => $this->form_validation->error_array());
-        } else {
-            $data['name']       = $this->input->post('name');
-            $data['phone_no']   = $this->input->post('contact_no');
-            $data['email']      = trim($this->input->post('email'));
-            $condtion           = ['id' => $id];
-            //user data insertion......
-            $details = $this->commonModel->updateData('users', $data, $condtion);
-            if ($details) {
-                $result = array('status' => true);
+        if( $this->input->post('userid')!='')
+        { 
+            $id   = $this->input->post('userid');
+            $this->load->library('MY_Form_validation');
+            $this->form_validation->set_rules('memberName', 'Name', 'required|strip_tags');
+            $this->form_validation->set_rules('contact_no', 'Mobile', 'required|strip_tags');
+            $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|edit_unique[users.email.'.$id.']', array(
+                'required'      => 'You have not provided a valid %s.',
+            ));
+            if ($this->form_validation->run() == false) {
+                $result = array('status' => false, 'error' => $this->form_validation->error_array(),'reset' => false);
             } else {
-                $result = array('status' => false, 'msg' => 'Something went wrong.');
+                
+                $data['name']       = $this->input->post('memberName');
+                $data['phone_no']   = $this->input->post('contact_no');
+                $data['email']      = trim($this->input->post('email'));
+                $condtion           = ['id' => $id];
+                //user data insertion......
+                $details = $this->commonModel->updateData('users', $data, $condtion);
+                if ($details) {
+                    $result = array('status' => true ,'msg' => 'Successfully updated.');
+                } else {
+                    $result = array('status' => true, 'msg' => 'Nothing to update.');
+                }
             }
+        }
+        else 
+        {
+            $result = array('status' => false, 'msg' => 'Something went wrong.','reset' => false);
         }
         echo json_encode($result);
     }

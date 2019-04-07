@@ -100,8 +100,8 @@ class CommonModel extends CI_Model
                 $this->db->order_by($order_by['key'], $order_by['type']);
             }
         }
-        $query = $this->db->get();
-        return $query->result_array();
+        return $query = $this->db->get();
+        //return $query->result_array();
     }
 }
 
