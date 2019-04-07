@@ -434,7 +434,7 @@ $(function() {
     }
     else if(roleId==2)
     {
-        $('#nav-menu-session').load('./includes/committynav.html');
+        $('#nav-menu-session').load('./includes/committeenav.html');
     }
     else if(roleId==3)
     {
