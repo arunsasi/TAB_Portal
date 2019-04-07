@@ -30,7 +30,8 @@ jQuery(document).ready(function ($) {
                         "render": function ( data, type, row ) {
                           //  return data +' ('+ row[3]+')';
                           var editurl = "user";
-                            return '<a href="javascript:void(0)" class="text-primary" onclick="editModelForm('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target=""><i class="fas fa-edit"></i></a> <a href="#" class="text-danger"><i class="fas fa-trash-alt"></i></a>';
+                          var deleteurl = "userremove";
+                            return '<a href="javascript:void(0)" class="text-primary" onclick="editModelForm('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target=""><i class="fas fa-edit"></i></a> <a href="javascript:void(0)" onclick="deletePop('+data+',\''+deleteurl+'\' )" class="text-danger"><i class="fas fa-trash-alt"></i></a>';
 
                            // return '<a class="btn" href="<?php echo site_url("Faq/view_faq_details/'+data[1]+'"); ?>" target="_blank" Title="View"><i class="fa fa-eye"></i></a>&nbsp;<?php if($role==ADMIN || $role== TO || $role== TL  || $role== CCM){ $perm1 = EDITFAQ; if(in_array($perm1, $permiss)){ ?><a class="btn" href="<?php echo site_url("Faq/edit_faq/'+data[1]+'"); ?>" target="_blank" Title="Edit"><i class="fa fa-pencil"></i></a><?php } $perm1 = DELETEFAQ; if(in_array($perm1, $permiss)){ ?><a class="btn" onclick="delete_faq('+data[1]+');" Title="Delete"><i class="fa fa-trash-o"></i></a><?php } } ?>';
                         },

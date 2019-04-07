@@ -61,6 +61,7 @@ $route['user/(:num)'] = 'User/getData/$1';
 $route['userlist'] = 'User/list';
 $route['userstore'] = 'User/store';
 $route['userupdate'] = 'User/edit';
+$route['userremove'] = 'User/destroy';
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';

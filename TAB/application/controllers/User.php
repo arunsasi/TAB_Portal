@@ -126,7 +126,7 @@ class User extends CI_Controller
         $data = array();
         if ($users->num_rows()>0) {
             foreach ($users->result_array() as $row) {
-                //hint => key - id in modelForm
+                //hint => key - name of form field in modelForm
                 $data = array(
                     'userid'   => $row['id'],
                     'memberName' => $row['name'],
@@ -150,7 +150,7 @@ class User extends CI_Controller
 
     public function store()
     {
-        $this->form_validation->set_rules('name', 'Name', 'required|strip_tags');
+        $this->form_validation->set_rules('memberName', 'Name', 'required|strip_tags');
         $this->form_validation->set_rules('contact_no', 'Mobile', 'required|strip_tags');
         $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|matches[confirm_email]|is_unique[users.email]', array(
             'required'      => 'You have not provided a valid %s.',
@@ -161,9 +161,9 @@ class User extends CI_Controller
         $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required');
 
         if ($this->form_validation->run() == false) {
-            $result = array('status' => false, 'error' => $this->form_validation->error_array());
+            $result = array('status' => false, 'error' => $this->form_validation->error_array(),'reset' => false);
         } else {
-            $data['name'] = $this->input->post('name');
+            $data['name'] = $this->input->post('memberName');
             $data['phone_no'] = $this->input->post('contact_no');
             $data['email'] = trim($this->input->post('email'));
             $data['password'] = md5($this->input->post('password'));
@@ -176,7 +176,7 @@ class User extends CI_Controller
                     $result = array('status' => true);
                     /// redirect('login');
                 } else {
-                    $result = array('status' => false, 'msg' => 'Something went wrong.');
+                    $result = array('status' => false, 'msg' => 'Something went wrong.','reset' => false);
                 }
         }
         echo json_encode($result);
@@ -235,15 +235,18 @@ class User extends CI_Controller
      * Date:            30-03-2019
      */
 
-    public function destroy($id)
+    public function destroy()
     {
-        $result = array('status' => false, 'msg' => 'Something went wrong.');
-        if ($id) {
+        if( $this->input->post('id')!='')
+        { 
+            $id   = $this->input->post('id');
+            $result = array('status' => false, 'msg' => 'Something went wrong.');
             $condtion           = ['id' => $id];
+            $data['status']      = DELETED;
             //user data deletion......
-            $details = $this->commonModel->deleteData('users', $condtion);
+            $details = $this->commonModel->updateData('users', $data, $condtion);
             if ($details) {
-                $result = array('status' => true);
+                $result = array('status' => true,'msg' => 'Success' ,'reload' => true);
             } 
         }
         echo json_encode($result);

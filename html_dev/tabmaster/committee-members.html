@@ -101,38 +101,37 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="addPrimaryEvent">
+                <form id="addForm" class="form-common" action="userstore" method="post" data-parsley-validate>
+                    <div class="alert-msg" role="alert"></div>
                     <div class="modal-body">
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>Event Name</label>
-                                <input class="form-control" id="eventName" type="text" autocomplete="off" required data-parsley-required-message="Type event name.">
+                            <div class="form-group col-md-6 memberName-div">
+                                <label>Name</label>
+                                <input class="form-control" id="memberName" name="memberName" type="text" autocomplete="off" value="" required data-parsley-required-message="Type member name.">
                             </div>
-                            <div class="form-group col-md-6">
-                                <label>Event Date</label>
-                                <input class="form-control" id="eventDate" type="text" name="daterange" autocomplete="off" required data-parsley-required-message="Type your contact number.">
+                            <div class="form-group col-md-6 contact_no-div">
+                                <label>Contact Number</label>
+                                <input class="form-control" id="contact_no" type="text" name="contact_no" value="" autocomplete="off"  data-parsley-required-message="Type your contact number.">                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 email-div">
+                                <label>Confirm Email</label>
+                                <input class="form-control" id="email" name="email" type="email" autocomplete="off" value="" required data-parsley-required-message="Type email id.">
+                            </div>
+                            <div class="form-group col-md-6 confirm_email-div">
+                                <label>Email</label>
+                                <input class="form-control" id="confirm_email" data-parsley-equalto="#email" name="confirm_email" type="email" autocomplete="off" value="" required data-parsley-required-message="Confirm email id.">
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>Event Venue</label>
-                                <input class="form-control" id="eventVenue" type="text" autocomplete="off" required data-parsley-required-message="Type venue name.">
+                            <div class="form-group col-md-6 password-div">
+                                <label>Password</label>
+                                <input class="form-control" id="password1" name="password" type="password" autocomplete="off" value="" required data-parsley-required-message="Type password.">
                             </div>
-                            <div class="form-group col-md-6">
-                                <label>Event Organizer</label>
-                                <input class="form-control " id="eventOrganizer" type="text" autocomplete="off" required data-parsley-required-message="Type organizer name.">
+                            <div class="form-group col-md-6 confirm_password-div">
+                                <label>Confirm Password</label>
+                                <input class="form-control" id="confirm_password" data-parsley-equalto="#password1" name="confirm_password" type="password" autocomplete="off" value="" required data-parsley-required-message="Confirm password.">
                             </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>Status</label>
-                                <select id="inputState" class="form-control">
-                                    <option selected>Active</option>
-                                    <option>Inactive</option>
-                                </select>
-                            </div>
-
                         </div>
 
                     </div>
@@ -156,19 +155,18 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="alert" role="alert">
-                </div>
                 <form id="editForm" class="form-common" action="userupdate" method="post" data-parsley-validate>
+                        <div class="alert-msg" role="alert"></div>
                     <div class="modal-body">
                         <input type="hidden" id='userid' name="userid" value="">
                         <div class="form-row">
                             <div class="form-group col-md-6 memberName-div">
                                 <label>Member Name</label>
-                                <input class="form-control" id="memberName" name="memberName" type="text" autocomplete="off" value=""  data-parsley-required-message="Type member name.">
+                                <input class="form-control" id="memberName" name="memberName" type="text" autocomplete="off" value="" required data-parsley-required-message="Type member name.">
                             </div>
                             <div class="form-group col-md-6 contact_no-div">
                                 <label>Contact Number</label>
-                                <input class="form-control" id="contact_no" type="text" name="contact_no" value="" autocomplete="off"  data-parsley-required-message="Type your contact number.">
+                                <input class="form-control" id="contact_no" type="text" name="contact_no" value="" autocomplete="off" required data-parsley-required-message="Type your contact number.">
                             </div>
                         </div>
                         <div class="form-row">
@@ -187,6 +185,24 @@
 
         </div>
     </div>
+
+    <div class="modal" id="deleteRecord" role="dialog" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+            <form role="form" method="post" class="form-common" name="deleteform" action="" >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <p>Are you sure want to delete ?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <input type="hidden" name="id" id="id" value="">
+                    <!--<input type="hidden" name="" id="pageid" value="">-->
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-primary" id="s1">Yes</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
 
     <script type="text/javascript" src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>

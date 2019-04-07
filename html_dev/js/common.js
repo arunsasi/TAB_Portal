@@ -222,10 +222,11 @@ $(document).ready(function () {
 					if (typeof response.msg !== 'undefined' )
 					{ 
                             
-                        $(".alert").fadeIn('fast');
-                        $(".alert").addClass('alert-success').removeClass('alert-danger');
-                        $(".alert").html(response.msg);
-                        $('.alert').delay(10000).fadeOut(2500); 
+                        $( form ).find(".alert-msg").fadeIn('fast');
+                        $( form ).find(".alert-msg").addClass('alert').addClass('alert-success').removeClass('alert-danger');
+                        $( form ).find(".alert-msg").html(response.msg);
+                        $( form ).find('.alert-msg').delay(10000).fadeOut(2500); 
+                        $('#deleteRecord').modal('hide');
                         //$('#editModelDiv').modal('hide');
                         if (response.reset == true)
                         {
@@ -250,19 +251,19 @@ $(document).ready(function () {
 					{
                         $.each(response.error, function (key, val) {
                             var msg = '<ul class="parsley-errors-list filled" ><li class="parsley-required">'+val+'</li></ul>'
-                            $('.'+key+'-div').append(msg);
+                            $( form ).find('.'+key+'-div').append(msg);
                            
                         });
 					}else if (typeof response.msg !== 'undefined' ){
-                            $(".alert").fadeIn('fast');
-                            $(".alert").addClass('alert-danger').removeClass('alert-success');
-                            $(".alert").html(response.msg);
-                            $('.alert').delay(1000).fadeOut(2500); 
+                            $( form ).find(".alert-msg").fadeIn('fast');
+                            $( form ).find(".alert-msg").addClass('alert').addClass('alert-danger').removeClass('alert-success');
+                            $( form ).find(".alert-msg").html(response.msg);
+                            $( form ).find('.alert-msg').delay(1000).fadeOut(2500); 
 
                         
                     }
                      if (response.reset != false)
-                        {alert()
+                        {
                             form.reset();
                         }
                     if (response.refresh == true)
@@ -295,35 +296,12 @@ $(document).ready(function () {
             },
             error: function (data) {  
 
-                $("#msg").fadeIn('fast');
-                $("#msg").addClass('alert-danger').removeClass('alert-success');
-                $("#msg").html('Validation Error.');
-                $('#msg').delay(1000).fadeOut(2500);
+                $( form ).find(".alert").fadeIn('fast');
+                $( form ).find(".alert").addClass('alert-danger').removeClass('alert-success');
+                $( form ).find(".alert").html('Validation Error.');
+                $( form ).find('.alert').delay(1000).fadeOut(2500); 
 
-                /*$( form ).find(".message").addClass("alert");
-                        $( form ).find(".message").addClass("alert-danger");
-                        $( form ).find('.message').html("Validation error");
-
-                        setTimeout(function() {
-                            $( form ).find(".message").empty();
-                            $( form ).find(".message").removeClass("alert-danger");
-                            $( form ).find(".message").removeClass("alert");
-                        }, 3000);*/
-
-				$.each(data.responseJSON.errors, function (i) {
-
-                    $.each(data.responseJSON.errors, function (key, val) {
-                       /*$("#"+form_id+" #"+key).addClass("red_border");
-                       $("#"+form_id+" #"+key).addClass("text-danger");
-                       $("#"+form_id+" #"+key+'_err').html(val);*/
-
-
-                        $( form ).find("#"+key).addClass("red_border");
-                        $( form ).find("#"+key).addClass("text-danger");
-                        $( form ).find("#"+key+'_err').html(val);
-                       
-                    });
-                });
+                
                 submit_btn.removeAttr("disabled");
                 reset_btn.removeAttr("disabled");
                 submit_btn.html('Submit');
@@ -367,8 +345,10 @@ function editModelForm(id, url, model)
             {
                 if(typeof response.data !== 'undefined')
                 {
+                    var form = $(this).closest("form");
                     $.each(response.data, function (key, val) {
-                        $('#'+key).val(val);
+                       // $('#'+key).val(val);
+                        $('#editModelDiv').find('input[name="'+key+'"]').val(val);
                     });
                     $('#editModelDiv').modal('show');
                 }
@@ -391,7 +371,7 @@ function ressetListForm_withCountBox()
 }
 
 //common function for showing popup for deletion
-function deletePop(actionUrl, id = null)
+function deletePop(id, actionUrl)
 {	
     $("#deleteRecord form").attr('action', actionUrl);
 	$("#deleteRecord #id").val(id);
