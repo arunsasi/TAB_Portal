@@ -57,11 +57,17 @@ $route['login_check'] = 'CompanyApi/login';
 $route['check_session'] = 'CompanyApi/check_session';
 $route['logout'] = 'CompanyApi/logout';
 
-$route['user/(:num)'] = 'User/getData/$1';
+$route['user/(:num)'] = 'User/getData/$1/2';
 $route['userlist'] = 'User/list';
 $route['userstore'] = 'User/store';
 $route['userupdate'] = 'User/edit';
 $route['userremove'] = 'User/destroy';
+
+$route['judge/(:num)'] = 'User/getData/$1/3';
+$route['judgelist'] = 'User/list';
+$route['judgestore'] = 'User/store';
+$route['judgeupdate'] = 'User/edit';
+$route['judgeremove'] = 'User/destroy';
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
