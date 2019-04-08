@@ -92,6 +92,7 @@ define('FRONT_END_USER_URL', 'http://localhost/natanahtml/html_dev/tabmaster/');
 //Roles
 define('ADMIN', 1);
 define('USER', 2); 
+define('JUDGE', 3);
 //User Status
 define('EMAIL_NOT_VERIFIED', 0);
 define('EMAIL_VERIFIED', 1);

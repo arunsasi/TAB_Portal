@@ -32,7 +32,7 @@ class User extends CI_Controller
         $length = intval($this->input->get("length"));
         $roleId = intval($this->input->get("role"));
         
-        $columns        = 'users.id,users.name,roles.name as role,users.status,phone_no,organization';
+        $columns        = 'users.id,users.name,roles.name as role,users.status,phone_no,organization,about_user';
         $condtion       = ['users.status !=' => DELETED, 'users.role_id' => $roleId];
         $search_value   = null;
         $search_like    = null;
@@ -40,7 +40,10 @@ class User extends CI_Controller
         $search_keywords    = $this->input->get('search[value]');
         if (isset($search_keywords) && !empty($search_keywords)) {
             $search_value = $search_keywords;
-            $search_like = array('users.name','roles.name','users.status','phone_no','organization','users.id');
+            if($roleId == USER)
+                $search_like = array('users.name','roles.name','users.status','phone_no','organization','users.id');
+            if($roleId == JUDGE)
+                $search_like = array('users.name','roles.name','users.status','phone_no','about_user','users.id');    
         }
 
         
@@ -60,9 +63,12 @@ class User extends CI_Controller
         $orderColumn = intval($this->input->get("order[0][column]"));
         $orderDir = $this->input->get("order[0][dir]");
         if (isset($orderColumn) && !empty($orderColumn)) {
-            
-            $search_like = array(1 => 'users.name', 2 => 'roles.name', 3 =>'phone_no', 4 => 'organization',5 =>'users.status');
-            $order_by['key'] = $search_like[$orderColumn];
+
+
+            $order_list = array('name' => 'users.name', 'role' => 'roles.name', 'phone_no' =>'phone_no', 'organization' => 'organization','status' =>'users.status','about' => 'about_user');
+           // echo $orderColumn;
+            $key = $this->input->get("columns[$orderColumn][data]");
+            $order_by['key'] = $order_list[$key];
             $order_by['type'] = $orderDir;
         }
         else 
@@ -78,13 +84,14 @@ class User extends CI_Controller
             foreach($users->result_array() as $r) {
 
                 $data[] = array(
-                    $i++,
-                    $r['name'],
-                    $r['role'],
-                    $r['phone_no'],
-                    $r['organization'],
-                    $r['status'],
-                    $r['id']           
+                    'slno' => $i++,
+                    'name' => $r['name'],
+                    'role' => $r['role'],
+                    'phone_no' => $r['phone_no'],
+                    'organization' => $r['organization'],
+                    'status' => $r['status'],
+                    'about' => $r['about_user'],
+                    'id' => $r['id']           
                 );
             }
         }
@@ -109,9 +116,9 @@ class User extends CI_Controller
      * @return string
      * Date::            30-03-2019
      */
-    public function getData($id)
+    public function getData($id,$roleId)
     {
-        $columns        = 'users.id,users.name,email,phone_no,role_id,users.status,roles.name as role';
+        $columns        = 'users.id,users.name,email,phone_no,role_id,users.status,roles.name as role,about_user';
         $condtion       = ['users.id' => $id, 'users.status !=' => DELETED];
         $joins = array(
                 array(
@@ -133,6 +140,10 @@ class User extends CI_Controller
                     'contact_no'  => $row['phone_no'],
                     'email'     => $row['email']       
                 );
+                if($roleId=JUDGE)
+                {
+                    $data['aboutUser'] = $row['about_user'];
+                }
 
             }
         }
@@ -167,13 +178,21 @@ class User extends CI_Controller
             $data['phone_no'] = $this->input->post('contact_no');
             $data['email'] = trim($this->input->post('email'));
             $data['password'] = md5($this->input->post('password'));
-            $data['role_id'] = USER;
+            $data['role_id'] = trim($this->input->post('roleid'));
             $data['status'] = APPROVED;
             $data['created_at'] = date("Y-m-d H:i:s");
+            if(!empty($this->input->post('organization')))
+            {
+                $data['organization'] = trim($this->input->post('organization'));
+            }
+            if(!empty($this->input->post('aboutUser')))
+            {
+                $data['about_user'] = trim($this->input->post('aboutUser'));
+            }
             //user data insertion......
             $details = $this->commonModel->insertData('users', $data);
             if ($details > 0) {
-                    $result = array('status' => true);
+                    $result = array('status' => true, 'msg' => 'Successfully Added','reset' => true);
                     /// redirect('login');
                 } else {
                     $result = array('status' => false, 'msg' => 'Something went wrong.','reset' => false);

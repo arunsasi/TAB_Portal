@@ -1,0 +1,3 @@
+//chinnu 8/4/19
+ALTER TABLE `users` ADD `about_user` VARCHAR(500) NULL AFTER `organization`;
+ALTER TABLE `users` CHANGE `organization` `organization` INT(3) NULL;
