@@ -69,6 +69,12 @@ $route['judgestore'] = 'User/store';
 $route['judgeupdate'] = 'User/edit';
 $route['judgeremove'] = 'User/destroy';
 
+$route['event/(:num)'] = 'Event/getData/$1/3';
+$route['eventlist'] = 'Event/list';
+$route['eventstore'] = 'Event/store';
+$route['eventupdate'] = 'Event/edit';
+$route['eventremove'] = 'Event/destroy';
+
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

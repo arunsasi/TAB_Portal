@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 class="pageheader-title">Judges</h2>
+                            <h2 class="pageheader-title">Judges Management</h2>
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
@@ -59,15 +59,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                           <!-- <tr>
-                                                <td>Tech-A-Break</td>
-                                                <td>06 May 2019 - 10 May 2019</td>
-                                                <td>Technopark</td>
-                                                <td>Natana</td>
-                                                <td><span class="badge-dot badge-success mr-1"></span>Active</td>
-                                                <td><a href="#" class="text-primary" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#editMember"><i class="fas fa-edit"></i></a> <a href="#" class="text-danger"><i class="fas fa-trash-alt"></i></a></td>
-                                            </tr>
-                                            -->
                                         </tbody>
 
                                     </table>
@@ -227,15 +218,8 @@
     <script type="text/javascript" src="../js/data-table.js"></script>
     <script>
         $(document).ready(function() {
-            $('#addPrimaryEvent').parsley();
-            $('#editPrimaryEvent').parsley();
-            $('input[name="daterange"]').daterangepicker({
-                opens: 'left',
-                locale: {
-                    format: 'DD MMMM YYYY'
-                }
-            });
-
+            $('#addForm').parsley();
+            $('#editForm').parsley();
         });
 
     </script>
