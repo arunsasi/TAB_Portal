@@ -41,9 +41,9 @@ class User extends CI_Controller
         if (isset($search_keywords) && !empty($search_keywords)) {
             $search_value = $search_keywords;
             if($roleId == USER)
-                $search_like = array('users.name','roles.name','users.status','phone_no','organization','users.id');
+                $search_like = array('users.name','roles.name','users.status','phone_no','organization');
             if($roleId == JUDGE)
-                $search_like = array('users.name','roles.name','users.status','phone_no','about_user','users.id');    
+                $search_like = array('users.name','roles.name','users.status','phone_no','about_user');    
         }
 
         

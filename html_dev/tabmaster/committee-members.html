@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 class="pageheader-title">Committee Members</h2>
+                            <h2 class="pageheader-title">Committee Management</h2>
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
@@ -220,15 +220,8 @@
     <script type="text/javascript" src="../js/data-table.js"></script>
     <script>
         $(document).ready(function() {
-            $('#addPrimaryEvent').parsley();
-            $('#editPrimaryEvent').parsley();
-            $('input[name="daterange"]').daterangepicker({
-                opens: 'left',
-                locale: {
-                    format: 'DD MMMM YYYY'
-                }
-            });
-
+            $('#addForm').parsley();
+            $('#editForm').parsley();
         });
 
     </script>

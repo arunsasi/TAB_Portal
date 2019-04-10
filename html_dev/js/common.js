@@ -343,15 +343,25 @@ function editModelForm(id, url, model)
             
             if(response.status==true)
             {
-                if(typeof response.data !== 'undefined')
+                if(typeof response.data.input !== 'undefined')
                 {
                     var form = $(this).closest("form");
-                    $.each(response.data, function (key, val) {
-                       // $('#'+key).val(val);
+                    $.each(response.data.input, function (key, val) {
                         $('#editModelDiv').find('input[name="'+key+'"]').val(val);
                     });
-                    $('#editModelDiv').modal('show');
+                    
                 }
+                if(typeof response.data.select !== 'undefined')
+                {
+                    var form = $(this).closest("form");
+                    $.each(response.data.select, function (key, val) {
+                        //$('#editModelDiv').find('input[name="'+key+'"]').val(val);
+                        $("#"+key).val(val).change();
+                    });
+                    
+                }
+                
+                $('#editModelDiv').modal('show');
             }
         }
     });
