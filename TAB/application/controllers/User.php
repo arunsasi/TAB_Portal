@@ -32,8 +32,8 @@ class User extends CI_Controller
         $length = intval($this->input->get("length"));
         $roleId = intval($this->input->get("role"));
         
-        $columns        = 'users.id,users.name,roles.name as role,users.status,phone_no,organization,about_user';
-        $condtion       = ['users.status !=' => DELETED, 'users.role_id' => $roleId];
+        $columns        = 'tab_user.user_id,tab_user.name,role_name,tab_user.status,contact_no,company_name,about_user';
+        $condtion       = ['tab_user.status !=' => DELETED, 'tab_user.role_id' => $roleId];
         $search_value   = null;
         $search_like    = null;
 
@@ -41,23 +41,28 @@ class User extends CI_Controller
         if (isset($search_keywords) && !empty($search_keywords)) {
             $search_value = $search_keywords;
             if($roleId == USER)
-                $search_like = array('users.name','roles.name','users.status','phone_no','organization');
+                $search_like = array('tab_user.name','role_name','tab_user.status','contact_no','company_name');
             if($roleId == JUDGE)
-                $search_like = array('users.name','roles.name','users.status','phone_no','about_user');    
+                $search_like = array('tab_user.name','role_name','tab_user.status','contact_no','about_user');    
         }
 
         
 
         $joins = array(
             array(
-            'table' => 'roles',
-            'condition' => 'roles.id=users.role_id',
-            'jointype' => 'FULL'
+                'table' => 'role',
+                'condition' => 'role.role_id=tab_user.role_id',
+                'jointype' => 'FULL'
+            ),
+            array(
+                'table' => 'company_list',
+                'condition' => 'company_list.company_id=tab_user.company_id',
+                'jointype' => 'LEFT'
             )
         );
 
         
-        $totalUsers = $this->commonModel->selectDataCommon('users', 'users.id', $condtion, $search_value, $search_like,$order_by = NULL,$limit = NULL ,$joins);
+        $totalUsers = $this->commonModel->selectDataCommon('tab_user', 'tab_user.user_id', $condtion, $search_value, $search_like,$order_by = NULL,$limit = NULL ,$joins);
         $iTotalRecords = $totalUsers->num_rows();
 
         $orderColumn = intval($this->input->get("order[0][column]"));
@@ -65,7 +70,7 @@ class User extends CI_Controller
         if (isset($orderColumn) && !empty($orderColumn)) {
 
 
-            $order_list = array('name' => 'users.name', 'role' => 'roles.name', 'phone_no' =>'phone_no', 'organization' => 'organization','status' =>'users.status','about' => 'about_user');
+            $order_list = array('name' => 'tab_user.name', 'role' => 'role_name', 'contact_no' =>'contact_no', 'company_name' => 'company_name','status' =>'tab_user.status','about' => 'about_user');
            // echo $orderColumn;
             $key = $this->input->get("columns[$orderColumn][data]");
             $order_by['key'] = $order_list[$key];
@@ -76,22 +81,22 @@ class User extends CI_Controller
             $order_by = NULL;
         }
         $limit = array('start' => $start , 'length' => $length);
-        $users = $this->commonModel->selectDataCommon('users', $columns, $condtion, $search_value, $search_like,$order_by,$limit ,$joins);
+        $users = $this->commonModel->selectDataCommon('tab_user', $columns, $condtion, $search_value, $search_like,$order_by,$limit ,$joins);
 
         $data = array();
         $i = 1;
         if ($users->num_rows()>0) {
-            foreach($users->result_array() as $r) {
+            foreach($users->result_array() as $row) {
 
                 $data[] = array(
                     'slno' => $i++,
-                    'name' => $r['name'],
-                    'role' => $r['role'],
-                    'phone_no' => $r['phone_no'],
-                    'organization' => $r['organization'],
-                    'status' => $r['status'],
-                    'about' => $r['about_user'],
-                    'id' => $r['id']           
+                    'name' => $row['name'],
+                    'role' => $row['role_name'],
+                    'contact_no' => $row['contact_no'],
+                    'company_name' => $row['company_name'],
+                    'status' => $row['status'],
+                    'about' => $row['about_user'],
+                    'id' => $row['user_id']           
                 );
             }
         }
@@ -118,31 +123,39 @@ class User extends CI_Controller
      */
     public function getData($id,$roleId)
     {
-        $columns        = 'users.id,users.name,email,phone_no,role_id,users.status,roles.name as role,about_user';
-        $condtion       = ['users.id' => $id, 'users.status !=' => DELETED];
+        $columns        = 'tab_user.user_id,tab_user.name,email,contact_no,tab_user.role_id,tab_user.status,role_name as role,about_user,tab_user.company_id';
+        $condtion       = ['tab_user.user_id' => $id, 'tab_user.status !=' => DELETED];
         $joins = array(
                 array(
-                'table' => 'roles',
-                'condition' => 'roles.id=users.role_id',
+                'table' => 'role',
+                'condition' => 'role.role_id=tab_user.role_id',
                 'jointype' => 'FULL'
+                ),
+                array(
+                    'table' => 'company_list',
+                    'condition' => 'company_list.company_id=tab_user.company_id',
+                    'jointype' => 'LEFT'
                 )
             );
         $limit = array('start' => 0 , 'length' => 1);
-        $users = $this->commonModel->selectDataCommon('users', $columns, $condtion,$search_value = NULL,$search_like = NULL,$order_by = NULL,$limit,$joins);
+        $users = $this->commonModel->selectDataCommon('tab_user', $columns, $condtion,$search_value = NULL,$search_like = NULL,$order_by = NULL,$limit,$joins);
 
         $data = array();
         if ($users->num_rows()>0) {
             foreach ($users->result_array() as $row) {
                 //hint => key - name of form field in modelForm
-                $data = array(
-                    'userid'   => $row['id'],
+                $data['input'] = array(
+                    'userid'   => $row['user_id'],
                     'memberName' => $row['name'],
-                    'contact_no'  => $row['phone_no'],
-                    'email'     => $row['email']       
+                    'contact_no'  => $row['contact_no'],
+                    'email'     => $row['email'],
+                    'company_id' => $row['company_id']    
                 );
                 if($roleId=JUDGE)
                 {
-                    $data['aboutUser'] = $row['about_user'];
+                    $data['withid'] = array(
+                        'aboutUseredit' => $row['about_user']    
+                    );
                 }
 
             }
@@ -163,7 +176,7 @@ class User extends CI_Controller
     {
         $this->form_validation->set_rules('memberName', 'Name', 'required|strip_tags');
         $this->form_validation->set_rules('contact_no', 'Mobile', 'required|strip_tags');
-        $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|matches[confirm_email]|is_unique[users.email]', array(
+        $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|matches[confirm_email]|is_unique[tab_user.email]', array(
             'required'      => 'You have not provided a valid %s.',
             'is_unique'     => 'This %s already exists.'
         ));
@@ -175,22 +188,23 @@ class User extends CI_Controller
             $result = array('status' => false, 'error' => $this->form_validation->error_array(),'reset' => false);
         } else {
             $data['name'] = $this->input->post('memberName');
-            $data['phone_no'] = $this->input->post('contact_no');
+            $data['contact_no'] = $this->input->post('contact_no');
             $data['email'] = trim($this->input->post('email'));
             $data['password'] = md5($this->input->post('password'));
+            
             $data['role_id'] = trim($this->input->post('roleid'));
             $data['status'] = APPROVED;
-            $data['created_at'] = date("Y-m-d H:i:s");
-            if(!empty($this->input->post('organization')))
+            $data['created_date'] = date("Y-m-d H:i:s");
+            if(!empty($this->input->post('company')))
             {
-                $data['organization'] = trim($this->input->post('organization'));
+                $data['company_id'] = intval($this->input->post('company'));
             }
             if(!empty($this->input->post('aboutUser')))
             {
                 $data['about_user'] = trim($this->input->post('aboutUser'));
             }
             //user data insertion......
-            $details = $this->commonModel->insertData('users', $data);
+            $details = $this->commonModel->insertData('tab_user', $data);
             if ($details > 0) {
                     $result = array('status' => true, 'msg' => 'Successfully Added','reset' => true);
                     /// redirect('login');
@@ -218,7 +232,7 @@ class User extends CI_Controller
             $this->load->library('MY_Form_validation');
             $this->form_validation->set_rules('memberName', 'Name', 'required|strip_tags');
             $this->form_validation->set_rules('contact_no', 'Mobile', 'required|strip_tags');
-            $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|edit_unique[users.email.'.$id.']', array(
+            $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|edit_unique[tab_user.email.'.$id.']', array(
                 'required'      => 'You have not provided a valid %s.',
             ));
             if ($this->form_validation->run() == false) {
@@ -226,11 +240,19 @@ class User extends CI_Controller
             } else {
                 
                 $data['name']       = $this->input->post('memberName');
-                $data['phone_no']   = $this->input->post('contact_no');
+                $data['contact_no']   = $this->input->post('contact_no');
                 $data['email']      = trim($this->input->post('email'));
-                $condtion           = ['id' => $id];
+                if(!empty($this->input->post('company')))
+                {
+                    $data['company_id'] = intval($this->input->post('company'));
+                }
+                if(!empty($this->input->post('aboutUser')))
+                {
+                    $data['about_user'] = trim($this->input->post('aboutUser'));
+                }
+                $condtion           = ['user_id' => $id];
                 //user data insertion......
-                $details = $this->commonModel->updateData('users', $data, $condtion);
+                $details = $this->commonModel->updateData('tab_user', $data, $condtion);
                 if ($details) {
                     $result = array('status' => true ,'msg' => 'Successfully updated.');
                 } else {
@@ -260,14 +282,36 @@ class User extends CI_Controller
         { 
             $id   = $this->input->post('id');
             $result = array('status' => false, 'msg' => 'Something went wrong.');
-            $condtion           = ['id' => $id];
+            $condtion           = ['user_id' => $id];
             $data['status']      = DELETED;
             //user data deletion......
-            $details = $this->commonModel->updateData('users', $data, $condtion);
+            $details = $this->commonModel->updateData('tab_user', $data, $condtion);
             if ($details) {
                 $result = array('status' => true,'msg' => 'Success' ,'reload' => true);
             } 
         }
+        echo json_encode($result);
+    }
+
+    /**
+     * Fetch company list
+     * @author          Chinnu
+     * @since           Version 1.0.0
+     * @param int $id
+     * @return string
+     * Date:            13-04-2019
+     */
+
+    public function getCompanyData()
+    {
+        $columns        = 'company_id as id,company_name as value';
+        $list = $this->commonModel->selectDataCommon('company_list', $columns);
+
+        $data = array();
+        if ($list->num_rows()>0) {
+            $data = $list->result_array();
+        }
+        $result = array('status' => true,'data' => $data);
         echo json_encode($result);
     }
 }
