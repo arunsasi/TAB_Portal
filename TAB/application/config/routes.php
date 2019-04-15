@@ -78,6 +78,8 @@ $route['eventupdate'] = 'Event/edit';
 $route['eventremove'] = 'Event/destroy';
 
 $route['get_coordinatorlist'] = 'Event/getCoordinatorData';
+$route['getjudgelist'] = 'Event/getAssignJudges';
+$route['updatejudgelist'] = 'Event/editAssignJudges';
 
 $route['contestant/(:num)'] = 'Contestant/getData/$1/3';
 $route['contestantlist'] = 'Contestant/list';
