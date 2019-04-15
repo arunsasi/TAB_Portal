@@ -34,15 +34,15 @@ class CompanyApi extends CI_Controller
             } else {
                 $email = trim($this->input->post('email'));
                 $password = md5($this->input->post('password'));
-                $columns    = 'id,name,role_id,status';
+                $columns    = 'user_id,name,role_id,status';
                 $condtion   = ['email' => $email, 'password' => $password];
-                $user = $this->commonModel->selectDataCommon('users', $columns, $condtion);
+                $user = $this->commonModel->selectDataCommon('tab_user', $columns, $condtion);
                 if ($user->num_rows()>0) {
                         foreach ($user->result_array() as $row) {
                                 $userName = $row['name'];
                                 $roleId = $row['role_id'];
                                 $useStatus = $row['status'];
-                                $userId = $row['id'];
+                                $userId = $row['user_id'];
                             }
                         if ($useStatus == BLOCKED || $useStatus == DELETED) {
                                 $result = array('status' => false, 'msg' => 'Something went wrong.');
@@ -154,9 +154,9 @@ class CompanyApi extends CI_Controller
                 $result = array('status' => false, 'error' => $this->form_validation->error_array());
             } else {
                 $email = $this->input->post('email');
-                $email = $columns = 'count(id) as cnt';
+                $email = $columns = 'count(user_id) as cnt';
                 $condtion = ['email' => $email];
-                $emailExist = $this->commonModel->selectDataCommon('users', $columns, $condtion);
+                $emailExist = $this->commonModel->selectDataCommon('tab_user', $columns, $condtion);
                 $emailcnt = 0;
                 foreach ($emailExist as $row) {
                         $emailcnt = $row['cnt'];
@@ -184,7 +184,7 @@ class CompanyApi extends CI_Controller
         $this->form_validation->set_rules('organization', 'Organization Name', 'required|strip_tags');
         $this->form_validation->set_rules('name', 'Name', 'required|strip_tags');
         $this->form_validation->set_rules('contact_no', 'Mobile', 'required|strip_tags');
-        $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|matches[confirm_email]|is_unique[users.email]', array(
+        $this->form_validation->set_rules('email', 'Email', 'required|strip_tags|valid_email|matches[confirm_email]|is_unique[tab_user.email]', array(
             'required'      => 'You have not provided a valid %s.',
             'is_unique'     => 'This %s already exists.'
         ));
@@ -202,10 +202,10 @@ class CompanyApi extends CI_Controller
                 $data['password'] = md5($this->input->post('password'));
                 $data['role_id'] = USER;
                 $data['status'] = EMAIL_NOT_VERIFIED;
-                $data['created_at'] = date("Y-m-d H:i:s");
+                $data['created_date'] = date("Y-m-d H:i:s");
                 $data['email_verification_code'] = md5($this->randomString(10));
                 //user data insertion......
-                $details = $this->commonModel->insertData('users', $data);
+                $details = $this->commonModel->insertData('tab_user', $data);
                 if ($details > 0) {
                         if ($data['email'] != null) {
 
@@ -268,22 +268,22 @@ class CompanyApi extends CI_Controller
                 $email              = $this->input->post('email');
                 $verificationCode   = $this->input->post('token');
 
-                $columns    = 'id,email_verification_code,status';
+                $columns    = 'user_id,email_verification_code,status';
                 $condtion   = ['email' => $email];
-                $code = $this->commonModel->selectDataCommon('users', $columns, $condtion);
+                $code = $this->commonModel->selectDataCommon('tab_user', $columns, $condtion);
                 if (!empty($code)) {
                         foreach ($code as $codes) {
                                 $userCode = $codes['email_verification_code'];
                                 $useStatus = $codes['status'];
-                                $userId = $codes['id'];
+                                $userId = $codes['user_id'];
                             }
                         if ($useStatus > EMAIL_NOT_VERIFIED) {
                                 $result = array('status' => true, 'msg' => 'Email already verified');
                             } elseif ($verificationCode === $userCode) {
                                 $data['status'] = EMAIL_VERIFIED;
                                 $data['email_verification_code'] = '';
-                                $condtion   = ['id' => $userId];
-                                $stat = $this->commonModel->updateData('users', $data, $condtion);
+                                $condtion   = ['user_id' => $userId];
+                                $stat = $this->commonModel->updateData('tab_user', $data, $condtion);
                                 if ($stat) {
                                         $result = array('status' => true, 'msg' => 'Success');
                                     } else {
@@ -318,11 +318,11 @@ class CompanyApi extends CI_Controller
                 $email  = $this->input->post('email');
                 $columns    = 'id,status';
                 $condtion   = ['email' => $email];
-                $emailExist = $this->commonModel->selectDataCommon('users', $columns, $condtion);
+                $emailExist = $this->commonModel->selectDataCommon('tab_user', $columns, $condtion);
                 if (!empty($emailExist)) {
                         foreach ($emailExist as $row) {
                                 $useStatus = $row['status'];
-                                $userId = $row['id'];
+                                $userId = $row['user_id'];
                             }
                         if ($useStatus == EMAIL_NOT_VERIFIED) {
                                 $result = array('status' => false, 'msg' => 'Email verification process pending');
@@ -332,8 +332,8 @@ class CompanyApi extends CI_Controller
                                 $result = array('status' => false, 'msg' => 'Your account is temerorly suspended please contact administrator');
                             } else {
                                 $data['email_verification_code'] = md5($this->randomString(10));
-                                $condtion   = ['id' => $userId];
-                                $stat = $this->commonModel->updateData('users', $data, $condtion);
+                                $condtion   = ['user_id' => $userId];
+                                $stat = $this->commonModel->updateData('tab_user', $data, $condtion);
                                 if ($stat) {
                                         $this->load->library('mail');
                                         $subject = "Natana";
@@ -377,20 +377,20 @@ class CompanyApi extends CI_Controller
                 $email              = $this->input->post('email');
                 $verificationCode   = $this->input->post('token');
 
-                $columns    = 'id,email_verification_code,status';
+                $columns    = 'user_id,email_verification_code,status';
                 $condtion   = ['email' => $email];
-                $emailExist = $this->commonModel->selectDataCommon('users', $columns, $condtion);
+                $emailExist = $this->commonModel->selectDataCommon('tab_user', $columns, $condtion);
                 if (!empty($emailExist)) {
                         foreach ($emailExist as $row) {
                                 $userCode = $row['email_verification_code'];
                                 $useStatus = $row['status'];
-                                $userId = $row['id'];
+                                $userId = $row['user_id'];
                             }
                         if ($verificationCode === $userCode) {
                                 $data['password'] = md5($this->input->post('password'));
                                 $data['email_verification_code'] = '';
-                                $condtion   = ['id' => $userId];
-                                $stat = $this->commonModel->updateData('users', $data, $condtion);
+                                $condtion   = ['user_id' => $userId];
+                                $stat = $this->commonModel->updateData('tab_user', $data, $condtion);
                                 if ($stat) {
                                         $result = array('status' => true, 'msg' => 'Success');
                                     } else {
@@ -409,5 +409,3 @@ class CompanyApi extends CI_Controller
 }
 
 /* End of file Registration */
-
-

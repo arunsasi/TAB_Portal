@@ -325,6 +325,9 @@ $(document).ready(function () {
 $('#editModelDiv').on('hidden.bs.modal', function (e) {
     page_refresh()
   })
+  $('#addModelDiv').on('hidden.bs.modal', function (e) {
+    page_refresh()
+  })
 function editModelForm(id, url, model)
 {
     var method = 'post';
@@ -337,6 +340,7 @@ function editModelForm(id, url, model)
         type: method,
         url: action,		
         dataType: "json",
+        async: true,
         success: function (data) {
             
             var response = data;
@@ -345,20 +349,30 @@ function editModelForm(id, url, model)
             {
                 if(typeof response.data.input !== 'undefined')
                 {
-                    var form = $(this).closest("form");
                     $.each(response.data.input, function (key, val) {
+                        if(val === null)
+                        {
+                            val = '';
+                        }
                         $('#editModelDiv').find('input[name="'+key+'"]').val(val);
                     });
-                    
                 }
-                if(typeof response.data.select !== 'undefined')
+                if(typeof response.data.withid !== 'undefined')
                 {
-                    var form = $(this).closest("form");
-                    $.each(response.data.select, function (key, val) {
-                        //$('#editModelDiv').find('input[name="'+key+'"]').val(val);
+                    $.each(response.data.withid, function (key, val) {
                         $("#"+key).val(val).change();
                     });
                     
+                }
+                var callfun = $('#editModelDiv').find("input.callfun");
+                var callfunarg = $('#editModelDiv').find("input.callfunarg");
+                arg = '';
+                if (callfunarg.length > 0) {
+                    arg = $('#editModelDiv').find("input.callfunarg").val();
+                }
+                if (callfun.length > 0) {
+                    callback = callfun.val();
+                    window[callback](arg);
                 }
                 
                 $('#editModelDiv').modal('show');

@@ -32,7 +32,7 @@ class Event extends CI_Controller
         $length = intval($this->input->get("length"));
         $roleId = intval($this->input->get("role"));
         
-        $columns        = 'events.id,name,eventdate,status,venue,eventType';
+        $columns        = 'events.event_id,event_name,event_date,prelims_date,status,prelims,venue,prelims_venue';
         $condtion       = ['status !=' => DELETED];
         $search_value   = null;
         $search_like    = null;
@@ -40,11 +40,11 @@ class Event extends CI_Controller
         $search_keywords    = $this->input->get('search[value]');
         if (isset($search_keywords) && !empty($search_keywords)) {
             $search_value = $search_keywords;
-            $search_like = array('name','eventdate','status','venue','eventType');
+            $search_like = array('event_name','event_date','prelims_date','status','venue','prelims_venue');
         }
 
         
-        $totalevents = $this->commonModel->selectDataCommon('events', 'events.id', $condtion, $search_value, $search_like,$order_by = NULL,$limit = NULL ,$joins = NULL);
+        $totalevents = $this->commonModel->selectDataCommon('events', 'events.event_id', $condtion, $search_value, $search_like,$order_by = NULL,$limit = NULL ,$joins = NULL);
         $iTotalRecords = $totalevents->num_rows();
 
         $orderColumn = intval($this->input->get("order[0][column]"));
@@ -52,7 +52,7 @@ class Event extends CI_Controller
         if (isset($orderColumn) && !empty($orderColumn)) {
 
 
-            $order_list = array('name' => 'name', 'date' =>'eventdate', 'venue' => 'venue','status' =>'events.status','eventType' =>'eventType');
+            $order_list = array('event_name' => 'event_name', 'date' =>'event_date', 'venue' => 'venue','status' =>'events.status','prelims' =>'prelims');
            // echo $orderColumn;
             $key = $this->input->get("columns[$orderColumn][data]");
             $order_by['key'] = $order_list[$key];
@@ -68,16 +68,18 @@ class Event extends CI_Controller
         $data = array();
         $i = 1;
         if ($events->num_rows()>0) {
-            foreach($events->result_array() as $r) {
+            foreach($events->result_array() as $row) {
 
                 $data[] = array(
                     'slno' => $i++,
-                    'name' => $r['name'],
-                    'date' => $r['eventdate'],
-                    'eventType' => $r['eventType'],
-                    'venue' => $r['venue'],
-                    'status' => $r['status'],
-                    'id' => $r['id']           
+                    'event_name' => $row['event_name'],
+                    'eventDate' => $row['event_date'],
+                    'prelims_date' => $row['prelims_date'],
+                    'prelims' => $row['prelims'],
+                    'venue' => $row['venue'],
+                    'prelims_venue' => $row['prelims_venue'],
+                    'status' => $row['status'],
+                    'id' => $row['event_id']           
                 );
             }
         }
@@ -104,24 +106,28 @@ class Event extends CI_Controller
      */
     public function getData($id,$roleId)
     {
-        $columns        = 'events.id,name,eventdate,status,venue,eventType';
-        $condtion       = ['events.id' => $id, 'events.status !=' => DELETED];
+        $columns        = 'events.event_id,event_name,event_date,prelims_date,status,prelims,venue,prelims_venue,contact_id';
+        $condtion       = ['events.event_id' => $id, 'events.status !=' => DELETED];
         $limit = array('start' => 0 , 'length' => 1);
         $events = $this->commonModel->selectDataCommon('events', $columns, $condtion,$search_value = NULL,$search_like = NULL,$order_by = NULL,$limit,$joins = NULL);
 
         $data = array();
         if ($events->num_rows()>0) {
             foreach ($events->result_array() as $row) {
-                //hint => key - name of form field in modelForm
+                //hint => key - event_name of form field in modelForm
                 $data['input'] = array(
-                    'eventid'   => $row['id'],
-                    'name' => $row['name'],
-                    'eventDate'  => $row['eventdate'],
-                    'venue'     => $row['venue']     
+                    'eventid'   => $row['event_id'],
+                    'event_name' => $row['event_name'],
+                    'eventDate'  => $row['event_date'],
+                    'prelimsDate' => $row['prelims_date'],
+                    'prelims' => $row['prelims'],
+                    'venue'     => $row['venue'],
+                    'prelimsVenue' => $row['prelims_venue'],     
+                    'contact_id' => $row['contact_id'],     
                 );
-                $data['select'] = array(
+                $data['withid'] = array(
                     'inputStateedit'     => $row['status'], 
-                    'eventTypeedit'     => $row['eventType']      
+                    'prelimsedit'     => $row['prelims']      
                 );
             }
         }
@@ -139,16 +145,22 @@ class Event extends CI_Controller
 
     public function store()
     {
-        $this->form_validation->set_rules('name', 'Event name', 'required|strip_tags');
+        $this->form_validation->set_rules('event_name', 'Event name', 'required|strip_tags');
         if ($this->form_validation->run() == false) {
             $result = array('status' => false, 'error' => $this->form_validation->error_array(),'reset' => false);
         } else {
-            $data['name'] = $this->input->post('name');
-            $data['eventDate'] = $this->input->post('eventDate');
+            $data['event_name'] = $this->input->post('event_name');
+            $data['event_date'] = $this->input->post('eventDate');
+            $data['contact_id'] = $this->input->post('contact');
+            $data['prelims'] = $this->input->post('prelims');
             $data['venue'] = trim($this->input->post('venue'));
-            $data['eventType'] = $this->input->post('eventType');
-             $data['status'] = $this->input->post('inputState');
-            $data['created_at'] = date("Y-m-d H:i:s");
+            $data['status'] = $this->input->post('inputState');
+            $data['created_date'] = date("Y-m-d H:i:s");
+            if($data['prelims'] != 0)
+            {
+                $data['prelims_venue'] = $this->input->post('prelimsVenue');
+                $data['prelims_date'] = $this->input->post('prelimsDate');
+            }
             //user data insertion......
             $details = $this->commonModel->insertData('events', $data);
             if ($details > 0) {
@@ -175,17 +187,28 @@ class Event extends CI_Controller
         if( $this->input->post('eventid')!='')
         { 
             $id   = $this->input->post('eventid');
-            $this->form_validation->set_rules('name', 'Name', 'required|strip_tags');
+            $this->form_validation->set_rules('event_name', 'Event name', 'required|strip_tags');
             if ($this->form_validation->run() == false) {
                 $result = array('status' => false, 'error' => $this->form_validation->error_array(),'reset' => false);
             } else {
                 
-                $data['name'] = $this->input->post('name');
-                $data['eventdate'] = $this->input->post('eventDate');
+                $data['event_name'] = $this->input->post('event_name');
+                $data['event_date'] = $this->input->post('eventDate');
                 $data['venue'] = trim($this->input->post('venue'));
-                $data['eventType'] = $this->input->post('eventType');
+                $data['prelims'] = $this->input->post('prelims');
                 $data['status'] = $this->input->post('inputState');
-                $condtion           = ['id' => $id];
+                if($data['prelims'] != 0)
+                {
+                    $data['prelims_venue'] = $this->input->post('prelimsVenue');
+                    $data['prelims_date'] = $this->input->post('prelimsDate');
+                }
+                else 
+                {
+                    $data['prelims_venue'] = NULL;
+                    $data['prelims_date'] = NULL;
+                }
+
+                $condtion           = ['event_id' => $id];
                 //user data insertion......
                 $details = $this->commonModel->updateData('events', $data, $condtion);
                 if ($details) {
@@ -217,13 +240,80 @@ class Event extends CI_Controller
         { 
             $id   = $this->input->post('id');
             $result = array('status' => false, 'msg' => 'Something went wrong.');
-            $condtion           = ['id' => $id];
+            $condtion           = ['event_id' => $id];
             $data['status']      = DELETED;
             //user data deletion......
             $details = $this->commonModel->updateData('events', $data, $condtion);
             if ($details) {
                 $result = array('status' => true,'msg' => 'Success' ,'reload' => true);
             } 
+        }
+        echo json_encode($result);
+    }
+    /**
+     * Fetch company list
+     * @author          Chinnu
+     * @since           Version 1.0.0
+     * @param int $id
+     * @return string
+     * Date:            13-04-2019
+     */
+
+    public function getCoordinatorData()
+    {
+        $columns        = 'user_id as id,name as value';
+        $condtion           = ['role_id' => USER, 'status !=' => DELETED];
+        $list = $this->commonModel->selectDataCommon('tab_user', $columns, $condtion);
+
+        $data = array();
+        if ($list->num_rows()>0) {
+            $data = $list->result_array();
+        }
+        $result = array('status' => true,'data' => $data);
+        echo json_encode($result);
+    }
+
+    /**
+     * Save new contestant data.
+     * @author          Chinnu
+     * @since           Version 1.0.0
+     * @param NULL
+     * @return string
+     * Date::            14-04-2019
+     */
+
+    public function contestantstore()
+    {
+        if( $this->input->post('eventid')!='')
+        {
+            $this->form_validation->set_rules('memberName', 'Name', 'required|strip_tags');
+            $this->form_validation->set_rules('contact_no', 'Mobile', 'strip_tags');
+            $this->form_validation->set_rules('email', 'Email', 'strip_tags|valid_email');
+
+            if ($this->form_validation->run() == false) {
+                $result = array('status' => false, 'error' => $this->form_validation->error_array(),'reset' => false);
+            } else {
+                $data['event_id']   = $this->input->post('eventid');
+                $data['name'] = $this->input->post('memberName');
+                $data['contact_no'] = $this->input->post('contact_no');
+                $data['email'] = trim($this->input->post('email'));
+                $data['prelims_roll_no'] = md5($this->input->post('prelimsRollno'));
+                $data['roll_no'] = md5($this->input->post('rollno'));
+                $data['status'] = APPROVED;
+                $data['created_date'] = date("Y-m-d H:i:s");
+                
+                //contestant data insertion......
+                $details = $this->commonModel->insertData('event_registration', $data);
+                if ($details > 0) {
+                        $result = array('status' => true, 'msg' => 'Successfully Added','reset' => true);
+                    } else {
+                        $result = array('status' => false, 'msg' => 'Something went wrong.','reset' => false);
+                    }
+            }
+        }
+        else 
+        {
+            $result = array('status' => false, 'msg' => 'Something went wrong.','reset' => false);
         }
         echo json_encode($result);
     }

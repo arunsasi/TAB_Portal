@@ -98,4 +98,6 @@ define('EMAIL_NOT_VERIFIED', 0);
 define('EMAIL_VERIFIED', 1);
 define('APPROVED', 2);
 define('BLOCKED', 3);
-define('DELETED', 4);
+define('DELETED', 99);
+define('ACTIVE', 1);
+define('INACTIVE', 2);

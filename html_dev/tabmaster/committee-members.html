@@ -4,12 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>TAB Admin Portal</title>
+    <title>TAB Committee Members</title>
     <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/vendor/fonts/circular-std/style.css">
     <link rel="stylesheet" href="../assets/libs/css/style.css">
     <link rel="stylesheet" href="../assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-html5-1.5.6/b-print-1.5.6/fh-3.1.4/r-2.2.2/sc-2.0.0/datatables.min.css" />
+    <link rel="stylesheet" href="../css/datatables.min.css" />
     <link rel="stylesheet" href="../assets/vendor/daterangepicker/daterangepicker.css" />
 </head>
 
@@ -108,11 +108,11 @@
                         <div class="form-row">
                             <div class="form-group col-md-6 memberName-div">
                                 <label>Name</label>
-                                <input class="form-control" id="memberName" name="memberName" type="text" autocomplete="off" value="" required data-parsley-required-message="Type member name.">
+                                <input class="form-control" name="memberName" type="text" autocomplete="off" value="" required data-parsley-required-message="Type member name.">
                             </div>
                             <div class="form-group col-md-6 contact_no-div">
                                 <label>Contact Number</label>
-                                <input class="form-control" id="contact_no" type="text" name="contact_no" value="" autocomplete="off"  data-parsley-required-message="Type your contact number.">                            </div>
+                                <input class="form-control"  type="text" name="contact_no" value="" autocomplete="off"  data-parsley-required-message="Type your contact number.">                            </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6 email-div">
@@ -132,6 +132,13 @@
                             <div class="form-group col-md-6 confirm_password-div">
                                 <label>Confirm Password</label>
                                 <input class="form-control" id="confirm_password" data-parsley-equalto="#password1" name="confirm_password" type="password" autocomplete="off" value="" required data-parsley-required-message="Confirm password.">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 company-div">
+                                <label>Company</label>
+                                <select id="company" name="company" class="form-control">
+                                </select>
                             </div>
                         </div>
 
@@ -160,20 +167,29 @@
                         <div class="alert-msg" role="alert"></div>
                     <div class="modal-body">
                         <input type="hidden" id='userid' name="userid" value="">
+                        <input type="hidden" id='company_id' name="company_id" value="">
+                        <input type="hidden" id='flag' name="flag" value="edit">
+                        <input type="hidden" class='callfun' name="callfun" value="getCompanyList">
+                        <input type="hidden" class='callfunarg' name="callfunarg" value="editModelDiv">
                         <div class="form-row">
                             <div class="form-group col-md-6 memberName-div">
                                 <label>Member Name</label>
-                                <input class="form-control" id="memberName" name="memberName" type="text" autocomplete="off" value="" required data-parsley-required-message="Type member name.">
+                                <input class="form-control" name="memberName" type="text" autocomplete="off" value="" required data-parsley-required-message="Type member name.">
                             </div>
                             <div class="form-group col-md-6 contact_no-div">
                                 <label>Contact Number</label>
-                                <input class="form-control" id="contact_no" type="text" name="contact_no" value="" autocomplete="off" required data-parsley-required-message="Type your contact number.">
+                                <input class="form-control" type="text" name="contact_no" value="" autocomplete="off" required data-parsley-required-message="Type your contact number.">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6 email-div">
                                 <label>Email</label>
                                 <input class="form-control" id="email" name="email" type="email" autocomplete="off" value="" required data-parsley-required-message="Type venue name.">
+                            </div>
+                            <div class="form-group col-md-6 company-div">
+                                <label>Company</label>
+                                <select id="companyedit" name="company" class="form-control">
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -188,22 +204,24 @@
     </div>
 
     <div class="modal" id="deleteRecord" role="dialog" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-            <form role="form" method="post" class="form-common" name="deleteform" action="" >
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <p>Are you sure want to delete ?</p>
-                  </div>
-                  <div class="modal-footer">
-                    <input type="hidden" name="id" id="id" value="">
-                    <!--<input type="hidden" name="" id="pageid" value="">-->
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    <button type="submit" class="btn btn-primary" id="s1">Yes</button>
-                  </div>
+        <form role="form" method="post" class="form-common" name="deleteform" action="" >
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                <p>Are you sure want to delete ?</p>
                 </div>
-              </div>
-            </form>
-          </div>
+                <div class="modal-footer">
+                <input type="hidden" name="id" id="id" value="">
+                <!--<input type="hidden" name="" id="pageid" value="">-->
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-primary" id="s1">Yes</button>
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+    
+
 
     <script type="text/javascript" src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
@@ -211,17 +229,19 @@
     <script type="text/javascript" src="../assets/vendor/parsley/parsley.js"></script>
     <script type="text/javascript" src="../assets/libs/js/main-js.js"></script>
     <script type="text/javascript" src="../assets/vendor/datatables/js/data-table.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-html5-1.5.6/b-print-1.5.6/fh-3.1.4/r-2.2.2/sc-2.0.0/datatables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="../js/pdfmake/pdfmake.min.js"></script>
+    <script type="text/javascript" src="../js/pdfmake//vfs_fonts.js"></script>
+    <script type="text/javascript" src="../js/datatables.min.js"></script>
+    <script type="text/javascript" src="../js/moment.min.js"></script>
+    <script type="text/javascript" src="../js/daterangepicker.min.js"></script>
     <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/custom.js"></script>
     <script type="text/javascript" src="../js/data-table.js"></script>
     <script>
         $(document).ready(function() {
             $('#addForm').parsley();
             $('#editForm').parsley();
+            getCompanyList('addModelDiv');
         });
 
     </script>
