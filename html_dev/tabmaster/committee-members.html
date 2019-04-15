@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>TAB Committee Members</title>
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/vendor/fonts/circular-std/style.css">
+    <link rel="stylesheet" href="../assets/libs/css/style.css">
+    <link rel="stylesheet" href="../assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <link rel="stylesheet" href="../css/datatables.min.css" />
+    <link rel="stylesheet" href="../assets/vendor/daterangepicker/daterangepicker.css" />
+</head>
+
+<body>
+
+    <div class="dashboard-main-wrapper">
+        <div id="nav-menu-session">  </div>
+
+        <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-header">
+                            <h2 class="pageheader-title">Committee Management</h2>
+                            <div class="page-breadcrumb">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">User Management</a></li>
+                                        <li class="breadcrumb-item active"><a href="#" class="breadcrumb-link">Committee Members</a></li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex">
+                                <h4 class="card-header-title">Member List</h4>
+                                <div class="toolbar ml-auto">
+                                    <a href="#" class="btn btn-success btn-sm" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#addModelDiv"><i class="fas fa-plus"></i> Add Member</a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="member-table" class="table table-striped table-bordered table-data-no-order">
+                                        <thead>
+                                            <tr>
+                                                <th>Sl.No</th>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Contact No</th>
+                                                <th>Organization</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                           <!-- <tr>
+                                                <td>Tech-A-Break</td>
+                                                <td>06 May 2019 - 10 May 2019</td>
+                                                <td>Technopark</td>
+                                                <td>Natana</td>
+                                                <td><span class="badge-dot badge-success mr-1"></span>Active</td>
+                                                <td><a href="#" class="text-primary" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#editMember"><i class="fas fa-edit"></i></a> <a href="#" class="text-danger"><i class="fas fa-trash-alt"></i></a></td>
+                                            </tr>
+                                            -->
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            &copy; 2019 NATANA.
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="addModelDiv" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Member</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addForm" class="form-common" action="userstore" method="post" data-parsley-validate>
+                    <input type="hidden" id='roleid' name="roleid" value="2">
+                    <div class="alert-msg" role="alert"></div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6 memberName-div">
+                                <label>Name</label>
+                                <input class="form-control" name="memberName" type="text" autocomplete="off" value="" required data-parsley-required-message="Type member name.">
+                            </div>
+                            <div class="form-group col-md-6 contact_no-div">
+                                <label>Contact Number</label>
+                                <input class="form-control"  type="text" name="contact_no" value="" autocomplete="off"  data-parsley-required-message="Type your contact number.">                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 email-div">
+                                <label>Confirm Email</label>
+                                <input class="form-control" id="email" name="email" type="email" autocomplete="off" value="" required data-parsley-required-message="Type email id.">
+                            </div>
+                            <div class="form-group col-md-6 confirm_email-div">
+                                <label>Email</label>
+                                <input class="form-control" id="confirm_email" data-parsley-equalto="#email" name="confirm_email" type="email" autocomplete="off" value="" required data-parsley-required-message="Confirm email id.">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 password-div">
+                                <label>Password</label>
+                                <input class="form-control" id="password1" name="password" type="password" autocomplete="off" value="" required data-parsley-required-message="Type password.">
+                            </div>
+                            <div class="form-group col-md-6 confirm_password-div">
+                                <label>Confirm Password</label>
+                                <input class="form-control" id="confirm_password" data-parsley-equalto="#password1" name="confirm_password" type="password" autocomplete="off" value="" required data-parsley-required-message="Confirm password.">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 company-div">
+                                <label>Company</label>
+                                <select id="company" name="company" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModelDiv" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Member</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="editForm" class="form-common" action="userupdate" method="post" data-parsley-validate>
+                        <div class="alert-msg" role="alert"></div>
+                    <div class="modal-body">
+                        <input type="hidden" id='userid' name="userid" value="">
+                        <input type="hidden" id='company_id' name="company_id" value="">
+                        <input type="hidden" id='flag' name="flag" value="edit">
+                        <input type="hidden" class='callfun' name="callfun" value="getCompanyList">
+                        <input type="hidden" class='callfunarg' name="callfunarg" value="editModelDiv">
+                        <div class="form-row">
+                            <div class="form-group col-md-6 memberName-div">
+                                <label>Member Name</label>
+                                <input class="form-control" name="memberName" type="text" autocomplete="off" value="" required data-parsley-required-message="Type member name.">
+                            </div>
+                            <div class="form-group col-md-6 contact_no-div">
+                                <label>Contact Number</label>
+                                <input class="form-control" type="text" name="contact_no" value="" autocomplete="off" required data-parsley-required-message="Type your contact number.">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6 email-div">
+                                <label>Email</label>
+                                <input class="form-control" id="email" name="email" type="email" autocomplete="off" value="" required data-parsley-required-message="Type venue name.">
+                            </div>
+                            <div class="form-group col-md-6 company-div">
+                                <label>Company</label>
+                                <select id="companyedit" name="company" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" id="deleteRecord" role="dialog" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <form role="form" method="post" class="form-common" name="deleteform" action="" >
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                <p>Are you sure want to delete ?</p>
+                </div>
+                <div class="modal-footer">
+                <input type="hidden" name="id" id="id" value="">
+                <!--<input type="hidden" name="" id="pageid" value="">-->
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-primary" id="s1">Yes</button>
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+    
+
+
+    <script type="text/javascript" src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    <script type="text/javascript" src="../assets/vendor/slimscroll/jquery.slimscroll.js"></script>
+    <script type="text/javascript" src="../assets/vendor/parsley/parsley.js"></script>
+    <script type="text/javascript" src="../assets/libs/js/main-js.js"></script>
+    <script type="text/javascript" src="../assets/vendor/datatables/js/data-table.js"></script>
+    <script type="text/javascript" src="../js/pdfmake/pdfmake.min.js"></script>
+    <script type="text/javascript" src="../js/pdfmake//vfs_fonts.js"></script>
+    <script type="text/javascript" src="../js/datatables.min.js"></script>
+    <script type="text/javascript" src="../js/moment.min.js"></script>
+    <script type="text/javascript" src="../js/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/custom.js"></script>
+    <script type="text/javascript" src="../js/data-table.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#addForm').parsley();
+            $('#editForm').parsley();
+            getCompanyList('addModelDiv');
+        });
+
+    </script>
+</body>
+
+</html>

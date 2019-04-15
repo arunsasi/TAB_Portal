@@ -31,12 +31,12 @@
         <div class="card ">
             <div class="card-header text-center"><img class="logo-img" src="../assets/images/logo.png" alt="Tech A Break"><span class="splash-description">ADMIN LOGIN</span></div>
             <div class="card-body">
-                <form id="loginForm" data-parsley-validate>
+                <form id="loginForm" class="form-common" action="http://localhost/natanahtml/TAB/login_check" data-parsley-validate>
                     <div class="form-group">
-                        <input class="form-control form-control-lg" id="officialemail" type="email" placeholder="Email ID" autocomplete="off" required data-parsley-type="email" data-parsley-required-message="Type your official email id.">
+                        <input class="form-control form-control-lg" id="officialemail" name="email" type="email" placeholder="Email ID" autocomplete="off" required data-parsley-type="email" data-parsley-required-message="Type your official email id.">
                     </div>
                     <div class="form-group">
-                        <input class="form-control form-control-lg" id="password" type="password" placeholder="Password" required data-parsley-required="true" data-parsley-required-message="Type your password.">
+                        <input class="form-control form-control-lg" id="password" name="password" type="password" placeholder="Password" required data-parsley-required="true" data-parsley-required-message="Type your password.">
                     </div>
                     <div class="form-group">
                         <label class="custom-control custom-checkbox">
@@ -60,6 +60,7 @@
     <script type="text/javascript" src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script type="text/javascript" src="../assets/vendor/parsley/parsley.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
     <script>
         $('#loginForm').parsley();
     </script>

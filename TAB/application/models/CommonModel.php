@@ -1,107 +1,107 @@
 <?php
 
-class commonModel extends CI_Model{
+class CommonModel extends CI_Model
+{
 
-
-	public function insertData($table, $data){
-		$this->db->insert($table, $data);
-		if($this->db->affected_rows() > 0){
-			return $this->db->last_insert_id();
-		} else {
-			return false;
-		}
-	}
-
-	public function updateData($table, $data, $condition){
-		$this->db->where($condition);
-		$this->db->update($table, $data);
-		if($this->db->affected_rows() > 0){
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public function deleteData($table, $condition){
-		$this->db->where($condition);
-		$this->db->delete($table);
-		if($this->db->affected_rows() > 0){
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public function selectData($table, $fields, $condition, $sort=NULL, $order=NULL, $offset=NULL, $limit=NULL){
-		if($sort != NULL && $order != NULL){
-			$this->db->order_by($sort, $order);
-		}
-		if($offset!=NULL && $limit!=NULL){
-			$this->db->limit($offset, $limit);
-		}
-
-		$this->db->select($fields);
-		$this->db->from($table);
-		$res = $this->db->get();
-		return $res->result();
-	}
-
-	/**
-     * @package         NATANA
-     * @author          Chinnu
-     * @since           Version 1.0
-     * Date:            23-03-2019	 
-	 * Description: 	Get data from any joined tables
-     */	
-    public function selectDataCommon($table, $columns=NULL ,$condtion=NULL )
+    function __construct()
     {
-        //Getting values for DataTale
+        parent::__construct();
+        $this->load->database();
+    }
+    public function insertData($table, $data)
+    {
+        $this->db->insert($table, $data);
+        if ($this->db->affected_rows() > 0) {
+            return $this->db->insert_id();
+        } else {
+            return false;
+        }
+    }
+    public function updateData($table, $data, $condition)
+    {
+        if ($condition != null) {
+            if (is_array($condition) && count($condition) > 0) {
+                    foreach ($condition as $k => $v) {
+                            if ($v != '' && $v != null) {
+                                $this->db->where($k, $v);
+                            }
+                        }
+                }
+        }
+        $this->db->update($table, $data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function deleteData($table, $condition)
+    {
+        if ($condition != null) {
+            if (is_array($condition) && count($condition) > 0) {
+                    foreach ($condition as $k => $v) {
+                            if ($v != '' && $v != null) {
+                                $this->db->where($k, $v);
+                            }
+                        }
+                }
+        }
+        $this->db->delete($table);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * Get data from any joined tables.
+ 	 * @author          Chinnu
+     * @since           Version 1.0.0
+     * @param string $table table name required
+     * @return array  lisr array
+     * Date:            23-03-2019
+     */
 
-        $this->db->select($columns,false)->from($table);
-        if (is_array($joins) && count($joins) > 0)
-        {
-            foreach($joins as $k => $v)
-            {
-                $this->db->join($v['table'], $v['condition'], $v['jointype']);
+    public function selectDataCommon($table, $columns = null, $condition = null, $search_value = null, $search_like = null, $order_by = null, $limit = null, $joins = null, $where_in = null, $where_in_data = null)
+    {
+        $this->db->select($columns, false)->from($table);
+        if (is_array($joins) && count($joins) > 0) {
+                foreach ($joins as $k => $v) {
+                        $this->db->join($v['table'], $v['condition'], $v['jointype']);
+                    }
             }
-        }
-        if($condtion != NULL){
-            if (is_array($condtion) && count($condtion) > 0)
-            {
-                foreach($condtion as $k => $v)
-                {  
-                     if($v['value'] != '' && $v['value'] != NULL){
-                        $this->db->where($v['key'], $v['value']);
-                     }
+        if ($condition != null) {
+            if (is_array($condition) && count($condition) > 0) {
+                    foreach ($condition as $k => $v) {
+                            if ($v != '' && $v != null) {
+                                $this->db->where($k, $v);
+                            }
+                        }
                 }
-            }
         }
-        if($search_value != NULL && $search_value != ''){
-            if (is_array($search_like) && count($search_like) > 0)
-            {
-             $this->db->group_start();
-                foreach($search_like as $k )
-                {  
-                    $this->db->or_like($k,$search_value);                   
+        if ($search_value != null && $search_value != '') {
+            if (is_array($search_like) && count($search_like) > 0) {
+                    $this->db->group_start();
+                    foreach ($search_like as $k) {
+                            $this->db->or_like($k, $search_value);
+                        }
+                    $this->db->group_end();
                 }
-              $this->db->group_end(); 
-            }
-        } 
+        }
         //Where in clause
-        if($where_in != NULL && (!empty($where_in_data))){
-         $this->db->where_in($where_in,$where_in_data);
+        if ($where_in != null && (!empty($where_in_data))) {
+            $this->db->where_in($where_in, $where_in_data);
         }
-        if(is_array($limit) && count($limit) > 0){
-            $this->db->limit($limit['length'],$limit['start']);
+        if (is_array($limit) && count($limit) > 0) {
+            $this->db->limit($limit['length'], $limit['start']);
         }
-        if($order_by != NULL){
-          if(is_array($order_by) && count($order_by) > 0){
-            $this->db->order_by($order_by['key'],$order_by['type']);
-          }
+        if ($order_by != null) {
+            if (is_array($order_by) && count($order_by) > 0) {
+                $this->db->order_by($order_by['key'], $order_by['type']);
+            }
         }
-        $query = $this->db->get(); 
-        return $query->result_array();
+        return $query = $this->db->get();
+        //return $query->result_array();
     }
 }
 
-?>

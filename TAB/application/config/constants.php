@@ -87,11 +87,17 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 /*
 | Custom Constents
 */
+define('FRONT_END_URL', 'http://localhost/natanahtml/html_dev/');
+define('FRONT_END_USER_URL', 'http://localhost/natanahtml/html_dev/tabmaster/');
 //Roles
+define('ADMIN', 1);
 define('USER', 2); 
+define('JUDGE', 3);
 //User Status
 define('EMAIL_NOT_VERIFIED', 0);
 define('EMAIL_VERIFIED', 1);
 define('APPROVED', 2);
 define('BLOCKED', 3);
-define('DELETED', 4);
+define('DELETED', 99);
+define('ACTIVE', 1);
+define('INACTIVE', 2);
