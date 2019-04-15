@@ -328,6 +328,12 @@ $('#editModelDiv').on('hidden.bs.modal', function (e) {
   $('#addModelDiv').on('hidden.bs.modal', function (e) {
     page_refresh()
   })
+  $('#addContestantModelDiv').on('hidden.bs.modal', function (e) {
+    page_refresh()
+  })
+  $('#selectJudgeModelDiv').on('hidden.bs.modal', function (e) {
+    page_refresh()
+  })
 function editModelForm(id, url, model)
 {
     var method = 'post';
