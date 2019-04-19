@@ -30,10 +30,15 @@ class Event extends CI_Controller
         $draw = intval($this->input->get("draw"));
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
-        $roleId = intval($this->input->get("role"));
+        $roleId = $this->session->userdata('roleId');
 
         $columns        = 'events.event_id,event_name,event_date,prelims_date,status,prelims,venue,prelims_venue';
         $condtion       = ['status !=' => DELETED];
+
+        if($roleId !== ADMIN)
+        {
+            $condtion['contact_id'] = $roleId;
+        }
         $search_value   = NULL;
         $search_like    = NULL;
 

@@ -87,6 +87,8 @@ $route['contestantstore'] = 'Contestant/contestantstore';
 $route['contestantupdate'] = 'Contestant/edit';
 $route['contestantremove'] = 'Contestant/destroy';
 
+$route['judgeeventlist'] = 'JudgeAction/list';
+
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
