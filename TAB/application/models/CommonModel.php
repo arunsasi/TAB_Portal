@@ -103,5 +103,23 @@ class CommonModel extends CI_Model
         return $query = $this->db->get();
         //return $query->result_array();
     }
+
+    public function deleteWithArray($table, $cond){
+        if($this->db->delete($table, $cond)){
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public function batch_insert($table, $insertData){
+        $this->db->insert_batch($table, $insertData);
+        if($this->db->affected_rows() > 0){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
