@@ -127,7 +127,7 @@ var check_session = function ()
                 $.each(response.data, function (key, val) {
                     div = div + '<input type="hidden" id="'+key+'" value="'+val+'" >';
                 });
-                var $div = $(div).appendTo('body');
+                $(div).appendTo('body');
             }
         },
         error: function (data) {  
@@ -326,6 +326,12 @@ $('#editModelDiv').on('hidden.bs.modal', function (e) {
     page_refresh()
   })
   $('#addModelDiv').on('hidden.bs.modal', function (e) {
+    page_refresh()
+  })
+  $('#addContestantModelDiv').on('hidden.bs.modal', function (e) {
+    page_refresh()
+  })
+  $('#selectJudgeModelDiv').on('hidden.bs.modal', function (e) {
     page_refresh()
   })
 function editModelForm(id, url, model)

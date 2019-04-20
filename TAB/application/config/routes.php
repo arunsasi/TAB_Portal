@@ -80,12 +80,16 @@ $route['getJudgementCriteria'] = 'Event/getJudgementCriteria';
 $route['updateCriteria'] = 'Event/updateCriteria';
 
 $route['get_coordinatorlist'] = 'Event/getCoordinatorData';
+$route['getjudgelist'] = 'Event/getAssignJudges';
+$route['updatejudgelist'] = 'Event/editAssignJudges';
 
 $route['contestant/(:num)'] = 'Contestant/getData/$1/3';
 $route['contestantlist'] = 'Contestant/list';
 $route['contestantstore'] = 'Contestant/contestantstore';
 $route['contestantupdate'] = 'Contestant/edit';
 $route['contestantremove'] = 'Contestant/destroy';
+
+$route['judgeeventlist'] = 'JudgeAction/list';
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';

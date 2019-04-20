@@ -1,0 +1,19 @@
+Steps to configure
+
+./projectfolder/TAB/application/config/database.php
+Set Database details
+
+/var/www/html/natanahtml/TAB/application/config/config.php
+$config['base_url'] = '';
+$config['index_page'] = 'index.php';
+
+
+./projectfolder/TAB/application/config/constants.php
+Set Front end application URL
+define('FRONT_END_URL', 'http://localhost/natanahtml/html_dev/');
+define('FRONT_END_USER_URL', 'http://localhost/natanahtml/html_dev/tabmaster/');
+
+
+./projectfolder/html_dev/js/common.js
+Set Backend application URL
+var apiUrl = 'http://localhost/natanahtml/TAB/index.php/';
