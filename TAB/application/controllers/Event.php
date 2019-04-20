@@ -35,7 +35,7 @@ class Event extends CI_Controller
         $columns        = 'events.event_id,event_name,event_date,prelims_date,status,prelims,venue,prelims_venue';
         $condtion       = ['status !=' => DELETED];
 
-        if($roleId !== ADMIN)
+        if($roleId != ADMIN)
         {
             $condtion['contact_id'] = $roleId;
         }
