@@ -6,7 +6,7 @@ $.ajaxSetup({
     //    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
-var apiUrl = 'http://localhost/natanahtml/TAB/index.php/';
+var apiUrl = 'http://localhost/natana/TAB_Portal/TAB/index.php/';
 var page_refresh = function () {
     window.location.reload(true);
 };

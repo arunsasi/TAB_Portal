@@ -217,7 +217,7 @@ jQuery(document).ready(function ($) {
                           addContestant = '<a href="javascript:void(0)" class="text-success" onclick="addContestantModelForm('+data+')" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Add Contestants"><i class="fas fa-user-plus"></i></a> ';
                           contestantlist = '<a href="./event-contestants.html?event='+data+'" class="text-secondary" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-eye"></i></a> ';
                           manageJudges = '<a href="javascript:void(0)" class="text-info" onclick="manageJudgesPop('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Manage Judges"><i class="fas fa-user-secret"></i></a> ';
-                          addCriteria = '<a href="./judge-criterea'+data+'" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Judging Creteria"><i class="fas fa-list-alt"></i></a> ';
+                          addCriteria = '<a href="./judge-criteria.html?event='+data+'&name='+row['event_name']+'" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Judging Creteria"><i class="fas fa-list-alt"></i></a> ';
 
                           if(currentUserRole === '1')
                             {
@@ -229,7 +229,7 @@ jQuery(document).ready(function ($) {
                             }
                             else {
                                 return '';
-                            }                            
+                            }
                         },
                         "targets": -1,
                         "orderable": false
