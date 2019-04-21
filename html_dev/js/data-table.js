@@ -413,7 +413,7 @@ jQuery(document).ready(function ($) {
                         "render": function ( data, type, row ) {
                           var editurl = "event";
                           var deleteurl = "eventremove";
-                          edit = '<a href="javascript:void(0)" class="text-primary" onclick="editModelForm1('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Edit Event"><i class="fas fa-edit"></i></a> ';
+                          judgementlist = '<a href="./judgement-list.html?event='+data+'" class="text-secondary" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-eye"></i></a> ';
                           
 
                           if(currentUserRole === '3')

@@ -223,30 +223,6 @@ class JudgeAction extends CI_Controller
         echo json_encode($result);
     }
 
-    /**
-     * Delete event data
-     * @author          Chinnu
-     * @since           Version 1.0.0
-     * @param int $id
-     * @return string
-     * Date:            10-04-2019
-     */
-
-    public function destroy()
-    {
-        if ($this->input->post('id') != '') {
-            $id   = $this->input->post('id');
-            $result = array('status' => false, 'msg' => 'Something went wrong.');
-            $condtion           = ['event_id' => $id];
-            $data['status']      = DELETED;
-            //user data deletion......
-            $details = $this->commonModel->updateData('events', $data, $condtion);
-            if ($details) {
-                $result = array('status' => true, 'msg' => 'Success', 'reload' => true);
-            }
-        }
-        echo json_encode($result);
-    }
 }
 
 /* End of file User Controller*/
