@@ -491,6 +491,96 @@ class Event extends CI_Controller
         echo json_encode($result);
 
     }
+    /**
+     * Fetch company list
+     * @author          RJ
+     * @since           Version 1.0.0
+     * @param int $id
+     * @return string
+     * Date:            15-04-2019
+     */
+
+    public function getJudgementCriteria()
+    {
+        $id = $this->input->post('event');
+        $columns = 'criteria,max_mark';
+        $condtion = ['event_id' => $id, 'status' => 1];
+        $list = $this->commonModel->selectDataCommon('judgement_criteria', $columns, $condtion);
+
+        $data = array();
+        if ($list->num_rows()>0) {
+            $data = $list->result_array();
+        }
+        $result = array('status' => 'success','data' => $data);
+        echo json_encode($result);
+        exit;
+    }
+
+    /**
+     * Fetch company list
+     * @author          RJ
+     * @since           Version 1.0.0
+     * @param array
+     * @return string
+     * Date:            17-04-2019
+     */
+
+    public function updateCriteria()
+    {
+        $postData = $this->input->post('postData');
+        $dataArray = json_decode($postData, true);
+        $delData = array("status" => 0);
+        $cond = array("event_id"=>$dataArray['eventId'], "status" => 1);
+        $sel = $this->commonModel->selectDataCommon('judgement_criteria', 'count(*) AS cnt', $cond)->row_array();
+        if($sel['cnt'] > 0){
+            $del = $this->commonModel->updateData('judgement_criteria', $delData, $cond);
+            $insertData = array();
+            if($del){
+                foreach ($dataArray['criteria'] as $key => $value) {
+                    $insertData[$key]['event_id'] = $dataArray['eventId'];
+                    $insertData[$key]['criteria'] = $value;
+                    $insertData[$key]['max_mark'] = $dataArray['max_mark'][$key];
+                    $insertData[$key]['status'] = 1; //active
+                    $insertData[$key]['created_date'] = date("Y-m-d H:i:s");
+                }
+                $res = $this->commonModel->batch_insert('judgement_criteria',$insertData);
+                if($res){
+                    echo json_encode(array('status' => 'success', 'data' => 'Updated Successfully!'));
+                } else {
+                    echo json_encode(array('status' => 'failed', 'data' => 'Update failed!'));
+                }
+                exit;
+            } else {
+                echo json_encode(array('status'=>'failed','data'=>'Update failed!'));
+                exit;
+            }
+        } else {
+            foreach ($dataArray['criteria'] as $key => $value) {
+                $insertData[$key]['event_id'] = $dataArray['eventId'];
+                $insertData[$key]['criteria'] = $value;
+                $insertData[$key]['max_mark'] = $dataArray['max_mark'][$key];
+                $insertData[$key]['status'] = 1; //active
+                $insertData[$key]['created_date'] = date("Y-m-d H:i:s");
+            }
+            $res = $this->commonModel->batch_insert('judgement_criteria',$insertData);
+            if($res){
+                echo json_encode(array('status' => 'success', 'data' => 'Updated Successfully!'));
+            } else {
+                echo json_encode(array('status' => 'failed', 'data' => 'Update failed!'));
+            }
+            exit;
+        }
+
+
+        $list = $this->commonModel->selectDataCommon('judgement_criteria', $columns, $condtion);
+
+        $data = array();
+        if ($list->num_rows()>0) {
+            $data = $list->result_array();
+        }
+        $result = array('status' => true,'data' => $data);
+        echo json_encode($result);
+    }
 }
 
 /* End of file User Controller*/

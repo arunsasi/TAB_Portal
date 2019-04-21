@@ -1,3 +1,10 @@
 //chinnu 15/4/19
 ALTER TABLE `event_judges` ADD `event_id` INT NOT NULL AFTER `judge_id`;
 ALTER TABLE `events` CHANGE `status` `status` INT(11) NOT NULL COMMENT '0-active,1-judgement open,2-judgement closed, 3-Event finished(pre or final), 99-deleted';
+
+20/04/2019
+ALTER TABLE `judgement_criteria` ADD `max_mark` INT NOT NULL AFTER `criteria`;
+
+ALTER TABLE `judgement_criteria` ADD `created_date` DATETIME NOT NULL AFTER `max_mark`;
+
+ALTER TABLE `judgement_criteria` ADD `status` INT NOT NULL DEFAULT '1' COMMENT '0 => amended, 1=> active' AFTER `max_mark`;
