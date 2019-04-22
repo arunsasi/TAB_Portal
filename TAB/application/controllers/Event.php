@@ -319,7 +319,7 @@ class Event extends CI_Controller
                     $data['prelimsJudges'] = array();
                     //Get Prelims Assigned Judges (if any)
                     $columns        = 'event_judges.judge_id as id,tab_user.name as value';
-                    $condtion       = ['event_judges.event_id' => $id, 'event_judges.prilims' => 1, 'event_judges.status !=' => DELETED];
+                    $condtion       = ['event_judges.event_id' => $id, 'event_judges.prelims' => 1, 'event_judges.status !=' => DELETED];
                     $joins = array(
                         array(
                             'table' => 'tab_user',
@@ -355,7 +355,7 @@ class Event extends CI_Controller
                 $data['finalsJudges'] = array();
                 //Get Finals Assigned Judges (if any)
                 $columns        = 'event_judges.judge_id as id,tab_user.name as value';
-                $condtion       = ['event_judges.event_id' => $id, 'event_judges.prilims' => 0, 'event_judges.status !=' => DELETED];
+                $condtion       = ['event_judges.event_id' => $id, 'event_judges.prelims' => 0, 'event_judges.status !=' => DELETED];
                 $joins = array(
                     array(
                         'table' => 'tab_user',
@@ -420,14 +420,14 @@ class Event extends CI_Controller
             if($haveprelims == 1 && $prelimsdisable == '')
             {
                 $data['status'] = DELETED;
-                $condtion           = ['event_id' => $event_id, 'prilims' => 1, 'status !=' =>DELETED];
+                $condtion           = ['event_id' => $event_id, 'prelims' => 1, 'status !=' =>DELETED];
                 $details = $this->commonModel->updateData('event_judges', $data, $condtion);
                 if(!empty($prelimsJudges))
                 {
                     foreach($prelimsJudges as $value)
                     {
                         $columns        = 'id';
-                        $condtion       = ['event_judges.event_id' => $event_id, 'event_judges.prilims' => 1, 'event_judges.judge_id' => $value];
+                        $condtion       = ['event_judges.event_id' => $event_id, 'event_judges.prelims' => 1, 'event_judges.judge_id' => $value];
                         $limit = array('start' => 0, 'length' => 1);
                         $judgeExist = $this->commonModel->selectDataCommon('event_judges', $columns, $condtion, $search_value = NULL, $search_like = NULL, $order_by = NULL, $limit, $joins = NULL);
 
@@ -443,7 +443,7 @@ class Event extends CI_Controller
                             $data = array();
                             $data['judge_id'] = $value;
                             $data['event_id'] = $event_id;
-                            $data['prilims'] = 1;
+                            $data['prelims'] = 1;
                             $data['status'] = ACTIVE;
                             $details = $this->commonModel->insertData('event_judges', $data);
                         }
@@ -454,14 +454,14 @@ class Event extends CI_Controller
             {
                 $data = array();
                 $data['status'] = DELETED;
-                $condtion           = ['event_id' => $event_id, 'prilims' => 0, 'status !=' =>DELETED];
+                $condtion           = ['event_id' => $event_id, 'prelims' => 0, 'status !=' =>DELETED];
                 $details = $this->commonModel->updateData('event_judges', $data, $condtion);
                 if(!empty($finalsJudges))
                 {
                     foreach($finalsJudges as $value)
                     {
                         $columns        = 'id';
-                        $condtion       = ['event_judges.event_id' => $event_id, 'event_judges.prilims' => 0, 'event_judges.judge_id' => $value];
+                        $condtion       = ['event_judges.event_id' => $event_id, 'event_judges.prelims' => 0, 'event_judges.judge_id' => $value];
                         $limit = array('start' => 0, 'length' => 1);
                         $judgeExist = $this->commonModel->selectDataCommon('event_judges', $columns, $condtion, $search_value = NULL, $search_like = NULL, $order_by = NULL, $limit, $joins = NULL);
 
@@ -477,7 +477,7 @@ class Event extends CI_Controller
                             $data = array();
                             $data['judge_id'] = $value;
                             $data['event_id'] = $event_id;
-                            $data['prilims'] = 0;
+                            $data['prelims'] = 0;
                             $data['status'] = ACTIVE;
                             $details = $this->commonModel->insertData('event_judges', $data);
                         }
