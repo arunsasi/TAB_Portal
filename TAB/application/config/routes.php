@@ -76,6 +76,8 @@ $route['eventlist'] = 'Event/list';
 $route['eventstore'] = 'Event/store';
 $route['eventupdate'] = 'Event/edit';
 $route['eventremove'] = 'Event/destroy';
+$route['getJudgementCriteria'] = 'Event/getJudgementCriteria';
+$route['updateCriteria'] = 'Event/updateCriteria';
 
 $route['get_coordinatorlist'] = 'Event/getCoordinatorData';
 $route['getjudgelist'] = 'Event/getAssignJudges';
@@ -86,6 +88,11 @@ $route['contestantlist'] = 'Contestant/list';
 $route['contestantstore'] = 'Contestant/contestantstore';
 $route['contestantupdate'] = 'Contestant/edit';
 $route['contestantremove'] = 'Contestant/destroy';
+
+$route['judgeeventlist'] = 'JudgeAction/list';
+$route['checkeventaccess'] = 'JudgeAction/checkEvent';
+$route['judgementlist'] = 'JudgeAction/judgementList';
+
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';

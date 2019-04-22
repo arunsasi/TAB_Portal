@@ -30,10 +30,15 @@ class Event extends CI_Controller
         $draw = intval($this->input->get("draw"));
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
-        $roleId = intval($this->input->get("role"));
+        $roleId = $this->session->userdata('roleId');
 
         $columns        = 'events.event_id,event_name,event_date,prelims_date,status,prelims,venue,prelims_venue';
         $condtion       = ['status !=' => DELETED];
+
+        if($roleId != ADMIN)
+        {
+            $condtion['contact_id'] = $roleId;
+        }
         $search_value   = NULL;
         $search_like    = NULL;
 
@@ -314,7 +319,7 @@ class Event extends CI_Controller
                     $data['prelimsJudges'] = array();
                     //Get Prelims Assigned Judges (if any)
                     $columns        = 'event_judges.judge_id as id,tab_user.name as value';
-                    $condtion       = ['event_judges.event_id' => $id, 'event_judges.prilims' => 1, 'event_judges.status !=' => DELETED];
+                    $condtion       = ['event_judges.event_id' => $id, 'event_judges.prelims' => 1, 'event_judges.status !=' => DELETED];
                     $joins = array(
                         array(
                             'table' => 'tab_user',
@@ -350,7 +355,7 @@ class Event extends CI_Controller
                 $data['finalsJudges'] = array();
                 //Get Finals Assigned Judges (if any)
                 $columns        = 'event_judges.judge_id as id,tab_user.name as value';
-                $condtion       = ['event_judges.event_id' => $id, 'event_judges.prilims' => 0, 'event_judges.status !=' => DELETED];
+                $condtion       = ['event_judges.event_id' => $id, 'event_judges.prelims' => 0, 'event_judges.status !=' => DELETED];
                 $joins = array(
                     array(
                         'table' => 'tab_user',
@@ -415,14 +420,14 @@ class Event extends CI_Controller
             if($haveprelims == 1 && $prelimsdisable == '')
             {
                 $data['status'] = DELETED;
-                $condtion           = ['event_id' => $event_id, 'prilims' => 1, 'status !=' =>DELETED];
+                $condtion           = ['event_id' => $event_id, 'prelims' => 1, 'status !=' =>DELETED];
                 $details = $this->commonModel->updateData('event_judges', $data, $condtion);
                 if(!empty($prelimsJudges))
                 {
                     foreach($prelimsJudges as $value)
                     {
                         $columns        = 'id';
-                        $condtion       = ['event_judges.event_id' => $event_id, 'event_judges.prilims' => 1, 'event_judges.judge_id' => $value];
+                        $condtion       = ['event_judges.event_id' => $event_id, 'event_judges.prelims' => 1, 'event_judges.judge_id' => $value];
                         $limit = array('start' => 0, 'length' => 1);
                         $judgeExist = $this->commonModel->selectDataCommon('event_judges', $columns, $condtion, $search_value = NULL, $search_like = NULL, $order_by = NULL, $limit, $joins = NULL);
 
@@ -438,7 +443,7 @@ class Event extends CI_Controller
                             $data = array();
                             $data['judge_id'] = $value;
                             $data['event_id'] = $event_id;
-                            $data['prilims'] = 1;
+                            $data['prelims'] = 1;
                             $data['status'] = ACTIVE;
                             $details = $this->commonModel->insertData('event_judges', $data);
                         }
@@ -449,14 +454,14 @@ class Event extends CI_Controller
             {
                 $data = array();
                 $data['status'] = DELETED;
-                $condtion           = ['event_id' => $event_id, 'prilims' => 0, 'status !=' =>DELETED];
+                $condtion           = ['event_id' => $event_id, 'prelims' => 0, 'status !=' =>DELETED];
                 $details = $this->commonModel->updateData('event_judges', $data, $condtion);
                 if(!empty($finalsJudges))
                 {
                     foreach($finalsJudges as $value)
                     {
                         $columns        = 'id';
-                        $condtion       = ['event_judges.event_id' => $event_id, 'event_judges.prilims' => 0, 'event_judges.judge_id' => $value];
+                        $condtion       = ['event_judges.event_id' => $event_id, 'event_judges.prelims' => 0, 'event_judges.judge_id' => $value];
                         $limit = array('start' => 0, 'length' => 1);
                         $judgeExist = $this->commonModel->selectDataCommon('event_judges', $columns, $condtion, $search_value = NULL, $search_like = NULL, $order_by = NULL, $limit, $joins = NULL);
 
@@ -472,7 +477,7 @@ class Event extends CI_Controller
                             $data = array();
                             $data['judge_id'] = $value;
                             $data['event_id'] = $event_id;
-                            $data['prilims'] = 0;
+                            $data['prelims'] = 0;
                             $data['status'] = ACTIVE;
                             $details = $this->commonModel->insertData('event_judges', $data);
                         }
@@ -485,6 +490,96 @@ class Event extends CI_Controller
         }
         echo json_encode($result);
 
+    }
+    /**
+     * Fetch company list
+     * @author          RJ
+     * @since           Version 1.0.0
+     * @param int $id
+     * @return string
+     * Date:            15-04-2019
+     */
+
+    public function getJudgementCriteria()
+    {
+        $id = $this->input->post('event');
+        $columns = 'criteria,max_mark';
+        $condtion = ['event_id' => $id, 'status' => 1];
+        $list = $this->commonModel->selectDataCommon('judgement_criteria', $columns, $condtion);
+
+        $data = array();
+        if ($list->num_rows()>0) {
+            $data = $list->result_array();
+        }
+        $result = array('status' => 'success','data' => $data);
+        echo json_encode($result);
+        exit;
+    }
+
+    /**
+     * Fetch company list
+     * @author          RJ
+     * @since           Version 1.0.0
+     * @param array
+     * @return string
+     * Date:            17-04-2019
+     */
+
+    public function updateCriteria()
+    {
+        $postData = $this->input->post('postData');
+        $dataArray = json_decode($postData, true);
+        $delData = array("status" => 0);
+        $cond = array("event_id"=>$dataArray['eventId'], "status" => 1);
+        $sel = $this->commonModel->selectDataCommon('judgement_criteria', 'count(*) AS cnt', $cond)->row_array();
+        if($sel['cnt'] > 0){
+            $del = $this->commonModel->updateData('judgement_criteria', $delData, $cond);
+            $insertData = array();
+            if($del){
+                foreach ($dataArray['criteria'] as $key => $value) {
+                    $insertData[$key]['event_id'] = $dataArray['eventId'];
+                    $insertData[$key]['criteria'] = $value;
+                    $insertData[$key]['max_mark'] = $dataArray['max_mark'][$key];
+                    $insertData[$key]['status'] = 1; //active
+                    $insertData[$key]['created_date'] = date("Y-m-d H:i:s");
+                }
+                $res = $this->commonModel->batch_insert('judgement_criteria',$insertData);
+                if($res){
+                    echo json_encode(array('status' => 'success', 'data' => 'Updated Successfully!'));
+                } else {
+                    echo json_encode(array('status' => 'failed', 'data' => 'Update failed!'));
+                }
+                exit;
+            } else {
+                echo json_encode(array('status'=>'failed','data'=>'Update failed!'));
+                exit;
+            }
+        } else {
+            foreach ($dataArray['criteria'] as $key => $value) {
+                $insertData[$key]['event_id'] = $dataArray['eventId'];
+                $insertData[$key]['criteria'] = $value;
+                $insertData[$key]['max_mark'] = $dataArray['max_mark'][$key];
+                $insertData[$key]['status'] = 1; //active
+                $insertData[$key]['created_date'] = date("Y-m-d H:i:s");
+            }
+            $res = $this->commonModel->batch_insert('judgement_criteria',$insertData);
+            if($res){
+                echo json_encode(array('status' => 'success', 'data' => 'Updated Successfully!'));
+            } else {
+                echo json_encode(array('status' => 'failed', 'data' => 'Update failed!'));
+            }
+            exit;
+        }
+
+
+        $list = $this->commonModel->selectDataCommon('judgement_criteria', $columns, $condtion);
+
+        $data = array();
+        if ($list->num_rows()>0) {
+            $data = $list->result_array();
+        }
+        $result = array('status' => true,'data' => $data);
+        echo json_encode($result);
     }
 }
 

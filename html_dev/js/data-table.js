@@ -55,6 +55,7 @@ jQuery(document).ready(function ($) {
     //Judges List
     if ($("#judge-table").length) {
         $(document).ready(function () {
+            var currentUserRole= $('#role-id').val();
             var table = $('#judge-table').DataTable({
                 processing: true,
                   serverSide: true,
@@ -89,9 +90,21 @@ jQuery(document).ready(function ($) {
                     },
                     {
                         "render": function ( data, type, row ) {
-                          var editurl = "user";
-                          var deleteurl = "userremove";
-                            return '<a href="javascript:void(0)" class="text-primary" onclick="editModelForm('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target=""><i class="fas fa-edit"></i></a> <a href="javascript:void(0)" onclick="deletePop('+data+',\''+deleteurl+'\' )" class="text-danger"><i class="fas fa-trash-alt"></i></a>';
+                            var editurl = "user";
+                            var deleteurl = "userremove";
+                            edit = '<a href="javascript:void(0)" class="text-primary" onclick="editModelForm('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target=""><i class="fas fa-edit"></i></a> ';
+                            deletefun = '<a href="javascript:void(0)" onclick="deletePop('+data+',\''+deleteurl+'\' )" class="text-danger"><i class="fas fa-trash-alt"></i></a> ';
+                            if(currentUserRole === '1')
+                            {
+                                return edit+' '+deletefun;
+                            }
+                            else if(currentUserRole === '2')
+                            {
+                                return edit;
+                            }
+                            else {
+                                return '';
+                            }
                         },
                         "targets": -1,
                         "orderable": false
@@ -105,6 +118,7 @@ jQuery(document).ready(function ($) {
      
      if ($("#eventlist-table").length) {
         $(document).ready(function () { 
+            var currentUserRole= $('#role-id').val();
             var table = $('#eventlist-table').DataTable({
                 processing: true,
                   serverSide: true,
@@ -198,7 +212,24 @@ jQuery(document).ready(function ($) {
                         "render": function ( data, type, row ) {
                           var editurl = "event";
                           var deleteurl = "eventremove";
-                            return '<a href="javascript:void(0)" class="text-primary" onclick="editModelForm('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Edit Event"><i class="fas fa-edit"></i></a> <a href="javascript:void(0)" onclick="deletePop('+data+',\''+deleteurl+'\' )" class="text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Delete Event"><i class="fas fa-trash-alt"></i></a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="text-success" onclick="addContestantModelForm('+data+')" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Add Contestants"><i class="fas fa-user-plus"></i></a> <a href="./event-contestants.html?event='+data+'" class="text-secondary" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-eye"></i></a>&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" class="text-info" onclick="manageJudgesPop('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Manage Judges"><i class="fas fa-user-secret"></i></a> <a href="./judge-criterea'+data+'" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Judging Creteria"><i class="fas fa-list-alt"></i></a>';
+                          edit = '<a href="javascript:void(0)" class="text-primary" onclick="editModelForm('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Edit Event"><i class="fas fa-edit"></i></a> ';
+                          deletefun = '<a href="javascript:void(0)" onclick="deletePop('+data+',\''+deleteurl+'\' )" class="text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Delete Event"><i class="fas fa-trash-alt"></i></a> ';
+                          addContestant = '<a href="javascript:void(0)" class="text-success" onclick="addContestantModelForm('+data+')" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Add Contestants"><i class="fas fa-user-plus"></i></a> ';
+                          contestantlist = '<a href="./event-contestants.html?event='+data+'" class="text-secondary" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-eye"></i></a> ';
+                          manageJudges = '<a href="javascript:void(0)" class="text-info" onclick="manageJudgesPop('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Manage Judges"><i class="fas fa-user-secret"></i></a> ';
+                          addCriteria = '<a href="./judge-criteria.html?event='+data+'&name='+row['event_name']+'" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Judging Creteria"><i class="fas fa-list-alt"></i></a> ';
+
+                          if(currentUserRole === '1')
+                            {
+                                return edit+' '+deletefun+ '&nbsp;&nbsp;&nbsp;'+addContestant+contestantlist+'&nbsp;&nbsp;&nbsp;'+manageJudges+addCriteria;
+                            }
+                            else if(currentUserRole === '2')
+                            {
+                                return addContestant+contestantlist+'&nbsp;&nbsp;&nbsp;'+manageJudges+addCriteria;
+                            }
+                            else {
+                                return '';
+                            }
                         },
                         "targets": -1,
                         "orderable": false
@@ -273,6 +304,183 @@ jQuery(document).ready(function ($) {
                           var editurl = "contestant";
                           var deleteurl = "contestantremove";
                             return '<a href="javascript:void(0)" class="text-primary" onclick="editModelForm('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Edit Event"><i class="fas fa-edit"></i></a> <a href="javascript:void(0)" onclick="deletePop('+data+',\''+deleteurl+'\' )" class="text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Delete Event"><i class="fas fa-trash-alt"></i></a>';
+                        },
+                        "targets": -1,
+                        "orderable": false
+                    }
+                ]
+                
+            });
+            
+        });
+    }
+
+    //Judge Event List
+     
+    if ($("#judgeeventlist-table").length) {
+        $(document).ready(function () { 
+            var currentUserRole= $('#role-id').val();
+            var table = $('#judgeeventlist-table').DataTable({
+                processing: true,
+                  serverSide: true,
+                  sortable: true,
+                ajax: {
+                    url : apiUrl+"judgeeventlist",
+                    type : 'GET',
+                    
+                    error: function(){  // error handling
+                        $(".judgeeventlist-table-error").html("");
+                        $("#judgeeventlist-table").append('<tbody class="judgeeventlist-table-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                        $("#judgeeventlist-table_processing").css("display","none");
+     
+                    }
+                },
+                drawCallback:function( settings, json){
+                    $('[data-toggle="tooltip"]').tooltip();
+                },
+                order: [[ 1, 'asc' ]],
+                columns: [
+                    { "data": "slno" },
+                    { "data": "event_name" },
+                    { "data": "eventDate" },
+                    { "data": "venue" },
+                    { "data": "prelims" },
+                    { "data": "status" },
+                    { "data": "id" }
+
+                ],
+                columnDefs: [ 
+                    {
+                        "targets": [0], "searchable": false, "orderable": false, "visible": true,
+                        "targets": [4], "searchable": false, "orderable": false, "visible": true
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            eventdate = '';
+                            if(row['prelims'] != 0 && row['prelims_date'] !== null && row['prelims_date'] != '')
+                            {
+                                eventdate = 'Prelims : '+ row['prelims_date'] + '<br> Main : ';
+                            }
+                            return eventdate + data;
+                        },
+                        "targets": 2,
+                        "orderable": false
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            venue = '';
+                            if(row['prelims'] != 0 && row['prelims_venue'] !== null && row['prelims_venue'] != '')
+                            {
+                                venue = 'Prelims : '+ row['prelims_venue'] + '<br> Main : ';
+                            }
+                            return venue + data;
+                        },
+                        "targets": 3,
+                        "orderable": false
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            if(row['prelims'] == 0)
+                            {
+                                return 'No';
+                            }
+                            return 'Yes';
+                        },
+                        "targets": 4,
+                        "orderable": false
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                            
+                            if(row['status'] == '0')
+                            {
+                                return 'Active';
+                            }
+                            else if(row['status'] == '1')
+                            {
+                                return 'Judgement Open';
+                            }
+                            else if(row['status'] == '2')
+                            {
+                                return 'Judgement Closed';
+                            }
+                            return '';
+                        },
+                        "targets": 5,
+                        "orderable": false
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                          var editurl = "event";
+                          var deleteurl = "eventremove";
+                          judgementlist = '<a href="./judgement-list.html?event='+data+'" class="text-success" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-plus">Judgement</i></a> ';
+                          
+
+                          if(currentUserRole === '3' && row['status'] == '1' && ((row['prelims'] == 1 && row['eventprelims'] == 1 )|| (row['prelims'] == 0 && (row['eventprelims'] == 0 || row['eventprelims'] == 2))))
+                            {
+                                return judgementlist;
+                            }
+                            else {
+                                return '';
+                            }
+                                                    
+                        },
+                        "targets": -1,
+                        "orderable": false
+                    }
+                ]
+                
+            });
+            
+        });
+    }
+
+    //Judgement List
+     
+    if ($("#judgementlist-table").length) {
+        $(document).ready(function () { 
+            console.log('table');
+            var eventid= $('#eventid').val();
+            var table = $('#judgementlist-table').DataTable({
+                processing: true,
+                  serverSide: true,
+                  sortable: true,
+                ajax: {
+                    url : apiUrl+"judgementlist",
+                    type : 'GET',
+                    data: function ( d ) {
+                        d.eventid = eventid;
+                    },
+                    
+                    error: function(){  // error handling
+                        $(".judgementlist-table-error").html("");
+                        $("#judgementlist-table").append('<tbody class="judgementlist-table-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                        $("#judgementlist-table_processing").css("display","none");
+     
+                    }
+                },
+                drawCallback:function( settings, json){
+                    $('[data-toggle="tooltip"]').tooltip();
+                },
+                order: [[ 1, 'asc' ]],
+                columns: [
+                    { "data": "slno" },
+                    { "data": "roll_no" },
+                    { "data": "id" }
+
+                ],
+                columnDefs: [ 
+                    {
+                        "targets": [0], "searchable": false, "orderable": false, "visible": true,
+                        "targets": [2], "searchable": false, "orderable": false, "visible": true
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                          var editurl = "event";
+                          var deleteurl = "eventremove";
+                          judgementlist = '<a href="./judgement-list.html?event='+data+'" class="text-success" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-edit">Edit</i></a> ';
+                                return judgementlist;
+                                                    
                         },
                         "targets": -1,
                         "orderable": false

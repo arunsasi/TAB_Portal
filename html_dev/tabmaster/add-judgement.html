@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>TAB Events</title>
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/vendor/fonts/circular-std/style.css">
+    <link rel="stylesheet" href="../assets/libs/css/style.css">
+    <link rel="stylesheet" href="../assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
+    <link rel="stylesheet" href="../css/datatables.min.css" />
+    <link rel="stylesheet" href="../assets/vendor/daterangepicker/daterangepicker.css" />
+</head>
+
+<body>
+
+    <div class="dashboard-main-wrapper">
+        <div id="nav-menu-session">  </div>
+
+        <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-header">
+                            <h2 class="pageheader-title">Judgement Criteria</h2>
+                            <div class="page-breadcrumb">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">Configuration</li>
+                                        <li class="breadcrumb-item"><a href="./event-configuration.html" class="breadcrumb-link">Event</a></li>
+                                        <li class="breadcrumb-item active">Judgement Criteria</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex">
+                                <h4 class="card-header-title">Event : </h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <form id="judgement-criteria-form" class="form-common" action="updateCriteria" method="post">
+                                        <input type="hidden" name="eventid" class="eventid"/>
+                                        <table id="judgement-criteria-table" class="table table-striped table-data-no-order">
+                                            <thead>
+                                                <tr>
+                                                    <th width="60%" style="text-align:center;">Criteria</th>
+                                                    <th width="20%" style="text-align:center;">Max Marks</th>
+                                                    <th width="20%" style="text-align:center;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="form-body">
+                                                <tr class="form-row0">
+                                                    <td width="60%" style="text-align:center;">
+                                                        <textarea name="crit_0" id="crit_0" style="width:100%;" required></textarea>
+                                                    </td>
+                                                    <td width="20%" style="text-align:center;">
+                                                        <input type="number" min=0 max=100 name="mark_0" id="mark_0" style="width:25%;" required="" />
+                                                    </td>
+                                                    <td width="20%" style="text-align:center;">
+                                                        <div class="add_button btn btn-primary" id="add_button0" style="width:25%;" attr-id="0">+</div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="pull-right" style="text-align:  right;padding-right: 25px;padding-top:  25px;">
+                                            <button id="update_form_data" class="btn btn-success">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            &copy; 2019 NATANA.
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+          <script type="text/javascript" src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+          <script type="text/javascript" src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+          <script type="text/javascript" src="../assets/vendor/slimscroll/jquery.slimscroll.js"></script>
+          <script type="text/javascript" src="../assets/vendor/parsley/parsley.js"></script>
+          <script type="text/javascript" src="../assets/libs/js/main-js.js"></script>
+          <script type="text/javascript" src="../assets/vendor/datatables/js/data-table.js"></script>
+          <script type="text/javascript" src="../js/pdfmake/pdfmake.min.js"></script>
+          <script type="text/javascript" src="../js/pdfmake//vfs_fonts.js"></script>
+          <script type="text/javascript" src="../js/datatables.min.js"></script>
+          <script type="text/javascript" src="../js/moment.min.js"></script>
+          <script type="text/javascript" src="../js/daterangepicker.min.js"></script>
+          <script type="text/javascript" src="../js/common.js"></script>
+          <script type="text/javascript" src="../js/custom.js"></script>
+          <script type="text/javascript" src="../js/data-table.js"></script>
+    <script>
+        $(document).ready(function() {
+            var url_string = window.location.href
+            var url = new URL(url_string);
+            var cnt = 0;
+            var eventId = url.searchParams.get("event");
+            var eventName = url.searchParams.get("name");
+            if(typeof eventId === undefined || eventId === null || typeof eventName === undefined || eventName === null)
+            {
+                page_redirect('./index.html');
+            }
+            $('.eventid').val(eventId);
+            $('.card-header-title').html("Event : "+eventName);
+            var action = apiUrl+"getJudgementCriteria";
+            var dataString = {event: eventId};
+
+            $.ajax({
+                type: "post",
+                url: action,
+                data: dataString,   
+                async: false,       
+                dataType: "json",
+                success: function (response) {
+                    var respData = response;
+                    if(respData.status == 'success'){
+                        var len = respData.data.length;
+                        var htmlData = '';
+                        for(var i=0;i<len;i++){
+                            if(i == 0){
+                                htmlData += '<tr class="form-row'+i+'">'+
+                                                '<td align="center" width="60%" style="text-align:center;">'+
+                                                    '<textarea name="crit_'+i+'" id="crit_'+i+'" style="width:100%;" required>'+respData.data[i]["criteria"]+'</textarea>'+
+                                                '</td>'+
+                                                '<td align="center" width="20%" style="text-align:center;">'+
+                                                    '<input type="number" min=0 max=100 name="mark_'+i+'" id="mark_'+i+'" style="width:25%;" required value="'+respData.data[i]["max_mark"]+'" />'+
+                                                '</td>'+
+                                                '<td width="20%" style="text-align:center;">'+
+                                                    '<div class="add_button btn btn-primary" id="add_button'+i+'" style="width:25%;" attr-id='+i+'>+</div>'+
+                                                '</td>'+
+                                            '</tr>';
+                            } else {
+                                htmlData += '<tr class="form-row'+i+'">'+
+                                                '<td align="center" width="60%" style="text-align:center;">'+
+                                                    '<textarea name="crit_'+i+'" id="crit_'+i+'" style="width:100%;" required>'+respData.data[i]["criteria"]+'</textarea>'+
+                                                '</td>'+
+                                                '<td align="center" width="20%" style="text-align:center;">'+
+                                                    '<input type="number" min=0 max=100 name="mark_'+i+'" id="mark_'+i+'" style="width:25%;" required value="'+respData.data[i]["max_mark"]+'" />'+
+                                                '</td>'+
+                                                '<td width="20%" style="text-align:center;">'+
+                                                    '<div class="remove_button btn btn-secondary" id="remove_button'+i+'" style="width:25%;margin-right:5%;" attr-id='+i+'>-</div>'+
+                                                    '<div class="add_button btn btn-primary" id="add_button'+i+'" style="width:25%;" attr-id='+i+'>+</div>'+
+                                                '</td>'+
+                                            '</tr>';
+                            }
+                        }
+                        if(htmlData != ''){
+                            $(".form-body").html(htmlData);
+                        }
+                    } else {
+                        alert("Error: No data available!!!");
+                        return false;
+                    }
+                },
+                error: function (data) {  
+                    alert("Error: Something Went Wrong!!!!");
+                }
+            });
+
+            $(document).on('click','.add_button', function(){
+                var attrid = parseInt($(this).attr("attr-id"));
+                cnt = cnt+1;
+                var html = '<tr class="form-row'+cnt+'">'+
+                                '<td align="center" width="60%" style="text-align:center;">'+
+                                    '<textarea name="crit_'+cnt+'" id="crit_'+cnt+'" style="width:100%;" required></textarea>'+
+                                '</td>'+
+                                '<td align="center" width="20%" style="text-align:center;">'+
+                                    '<input type="number" min=0 max=100 name="mark_'+cnt+'" id="mark_'+cnt+'" style="width:25%;" required />'+
+                                '</td>'+
+                                '<td width="20%" style="text-align:center;">'+
+                                    '<div class="remove_button btn btn-secondary" id="remove_button'+cnt+'" style="width:25%;margin-right:5%;" attr-id='+cnt+'>-</div>'+
+                                    '<div class="add_button btn btn-primary" id="add_button'+cnt+'" style="width:25%;" attr-id='+cnt+'>+</div>'+
+                                '</td>'+
+                            '</tr>';
+                $(".form-row"+attrid).parent().append(html);
+                
+            });
+
+            $(document).on('click','.remove_button', function(){
+                $(this).closest("tr").remove();
+                cnt = cnt-1;
+            });
+
+            $(document).on('click','#update_form_data', function(e){
+                e.preventDefault();
+                var objArray = {};
+                objArray['eventId'] = eventId;
+                objArray['criteria'] = [];
+                objArray['max_mark'] = [];
+                for(var i=0;i<=cnt;i++){
+                    if(($('#crit_'+i).val()) && $('#crit_'+i).val() != ""){
+                        if($('#mark'+i).val() == "" || $('#mark_'+i).val() < 0 || $('#mark_'+i).val() > 100){
+                            alert("Please enter valid data or remove the field.");
+                            $('#mark_'+i).focus();
+                            return false;
+                        } else {
+                            objArray['criteria'].push($('#crit_'+i).val());
+                            objArray['max_mark'].push($('#mark_'+i).val());
+                        }
+                    } else {
+                        alert("Please enter valid data or remove the field.");
+                        $('#crit_'+i).focus();
+                        return false;
+                    }
+                }
+
+                var action = apiUrl+$("#judgement-criteria-form").attr("action");
+                var dataString = {postData: JSON.stringify(objArray)};
+
+                $.ajax({
+                    type: "post",
+                    url: action,
+                    data: dataString,      
+                    dataType: "json",
+                    success: function (response) {
+                        var respData = response;
+                        if(respData.status == 'success'){
+                            alert("Judgment criteria updated successfully.");
+                            return false;
+                        } else {
+                            alert("Update failed!!!");
+                            return false;
+                        }
+                    },
+                    error: function (data) {  
+                        alert("Failed to connect!!!");
+                        return false;
+                    }
+                });
+
+            });
+
+            $('#addContestantForm').parsley();
+
+        });
+
+    </script>
+</body>
+
+</html>
