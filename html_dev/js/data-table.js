@@ -413,13 +413,73 @@ jQuery(document).ready(function ($) {
                         "render": function ( data, type, row ) {
                           var editurl = "event";
                           var deleteurl = "eventremove";
-                          judgementlist = '<a href="./judgement-list.html?event='+data+'" class="text-secondary" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-eye"></i></a> ';
+                          judgementlist = '<a href="./judgement-list.html?event='+data+'" class="text-success" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-plus">Judgement</i></a> ';
                           
 
-                          if(currentUserRole === '3')
+                          if(currentUserRole === '3' && row['status'] == '1' && ((row['prelims'] == 1 && row['eventprelims'] == 1 )|| (row['prelims'] == 0 && (row['eventprelims'] == 0 || row['eventprelims'] == 2))))
                             {
-                                return edit;
+                                return judgementlist;
                             }
+                            else {
+                                return '';
+                            }
+                                                    
+                        },
+                        "targets": -1,
+                        "orderable": false
+                    }
+                ]
+                
+            });
+            
+        });
+    }
+
+    //Judgement List
+     
+    if ($("#judgementlist-table").length) {
+        $(document).ready(function () { 
+            console.log('table');
+            var eventid= $('#eventid').val();
+            var table = $('#judgementlist-table').DataTable({
+                processing: true,
+                  serverSide: true,
+                  sortable: true,
+                ajax: {
+                    url : apiUrl+"judgementlist",
+                    type : 'GET',
+                    data: function ( d ) {
+                        d.eventid = eventid;
+                    },
+                    
+                    error: function(){  // error handling
+                        $(".judgementlist-table-error").html("");
+                        $("#judgementlist-table").append('<tbody class="judgementlist-table-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+                        $("#judgementlist-table_processing").css("display","none");
+     
+                    }
+                },
+                drawCallback:function( settings, json){
+                    $('[data-toggle="tooltip"]').tooltip();
+                },
+                order: [[ 1, 'asc' ]],
+                columns: [
+                    { "data": "slno" },
+                    { "data": "roll_no" },
+                    { "data": "id" }
+
+                ],
+                columnDefs: [ 
+                    {
+                        "targets": [0], "searchable": false, "orderable": false, "visible": true,
+                        "targets": [2], "searchable": false, "orderable": false, "visible": true
+                    },
+                    {
+                        "render": function ( data, type, row ) {
+                          var editurl = "event";
+                          var deleteurl = "eventremove";
+                          judgementlist = '<a href="./judgement-list.html?event='+data+'" class="text-success" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Contestants List"><i class="fas fa-edit">Edit</i></a> ';
+                                return judgementlist;
                                                     
                         },
                         "targets": -1,

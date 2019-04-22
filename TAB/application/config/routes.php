@@ -90,6 +90,9 @@ $route['contestantupdate'] = 'Contestant/edit';
 $route['contestantremove'] = 'Contestant/destroy';
 
 $route['judgeeventlist'] = 'JudgeAction/list';
+$route['checkeventaccess'] = 'JudgeAction/checkEvent';
+$route['judgementlist'] = 'JudgeAction/judgementList';
+
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
