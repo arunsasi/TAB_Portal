@@ -100,18 +100,19 @@ class CompanyApi extends CI_Controller
                         break;
                     }
             }
+            $result = array('status' => true, 'msg' => 'Valid Access2', 'data' => $array);
 
-        if ($roleId == NULL && $notLogedInUserUrl) {
+        /*if ($roleId == NULL && $notLogedInUserUrl) {
                 $result = array('status' => true, 'msg' => 'Valid Access1', 'data' => $array);
             } elseif ($roleId == NULL && !$notLogedInUserUrl) {
-                $result = array('status' => false, 'msg' => 'Invalid Access', 'url' => FRONT_END_URL . 'login.html');
+                $result = array('status' => false, 'msg' => 'Invalid Access', 'url' => FRONT_END_URL . 'index.html');
             } elseif (!$notLogedInUserUrl) {
                 $result = array('status' => true, 'msg' => 'Valid Access2', 'data' => $array);
             } elseif ($notLogedInUserUrl) {
             $result = array('status' => false, 'msg' => 'Invalid Access', 'url' => FRONT_END_USER_URL . 'index.html');
         } else {
-                $result = array('status' => false, 'msg' => 'Invalid Access', 'url' => FRONT_END_URL . 'login.html');
-            }
+                $result = array('status' => false, 'msg' => 'Invalid Access', 'url' => FRONT_END_URL . 'index.html');
+            }*/
         echo json_encode($result);
     }
     /**
@@ -126,7 +127,7 @@ class CompanyApi extends CI_Controller
     {
         $array_items = array('userName', 'roleId', 'useStatus', 'userId');
         $this->session->unset_userdata($array_items);
-        $result = array('status' => true, 'url' => FRONT_END_URL . 'login.html');
+        $result = array('status' => true, 'url' => FRONT_END_URL . 'index.html');
         echo json_encode($result);
     }
     /**
