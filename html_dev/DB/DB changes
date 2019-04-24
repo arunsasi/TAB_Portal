@@ -1,4 +1,4 @@
-//chinnu 15/4/19
+54//chinnu 15/4/19
 ALTER TABLE `event_judges` ADD `event_id` INT NOT NULL AFTER `judge_id`;
 ALTER TABLE `events` CHANGE `status` `status` INT(11) NOT NULL COMMENT '0-active,1-judgement open,2-judgement closed, 3-Event finished(pre or final), 99-deleted';
 
