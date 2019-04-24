@@ -41,11 +41,13 @@
                             <div class="card-header d-flex">
                                 <h4 class="card-header-title">Judgements</h4>
                                 <div class="toolbar ml-auto">
-                                    <a href="#" class="btn btn-success btn-sm" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#addContestantModelDiv"><i class="fas fa-plus"></i> New Judgement</a>
+                                    <a href="javascript:void(0)" class="btn btn-success btn-sm" data-backdrop="static" data-keyboard="false" onclick="addJudgmentForm()" ><i class="fas fa-plus"></i> New Judgement</a>
                                 </div>
                             </div>
                             <div class="card-body">
                                 <input type="hidden" id="eventid" value="">
+                                <input type="hidden" id="criteria_cnt" value="">
+                                <input type="hidden" id="rawcount" value="">
                                 <div class="table-responsive">
                                     <table id="judgementlist-table" class="table table-striped table-bordered table-data-no-order">
                                         <thead>
@@ -55,8 +57,7 @@
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                        </tbody>
+                                        <tbody class="list-form-body"></tbody>
 
                                     </table>
                                 </div>
@@ -78,6 +79,97 @@
 
         </div>
     </div>
+    <div class="modal fade" id="addJudgmentDiv" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Mark New Judgement</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="addForm" class="form-new-judgment" action="" method="post" data-parsley-validate>
+                    <div class="alert-msg" role="alert"></div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                                <div class="form-group col-md-10 name-div">
+                                </div>
+                            <div class="form-group col-md-2 name-div">
+                                <label>Roll Number</label>
+                                <input class="form-control rollNo" name="rollNo" type="text" autocomplete="off" value=""
+                                    required data-parsley-required-message="Type Roll No.">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <table id="judgement-criteria-table" class="table table-striped table-data-no-order">
+                                <thead>
+                                    <tr>
+                                        <th width="60%" style="text-align:center;">Criteria</th>
+                                        <th width="20%" style="text-align:center;">Max Marks</th>
+                                        <th width="20%" style="text-align:center;">Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="form-body">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal fade" id="editJudgmentDiv" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Judgement</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="editForm" class="form-edit-judgment" action="" method="post" data-parsley-validate>
+                            <input type="hidden" id="currentRollno" class="currentRollno" name="currentRollno" value="">
+                        <div class="alert-msg" role="alert"></div>
+                        <div class="modal-body">
+                            <div class="form-row">
+                                    <div class="form-group col-md-10 name-div">
+                                    </div>
+                                <div class="form-group col-md-2 name-div">
+                                    <label>Roll Number</label>
+                                    <input class="form-control editrollNo" name="editrollNo" type="text" autocomplete="off" value=""
+                                        required data-parsley-required-message="Type Roll No.">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <table id="judgement-criteria-table" class="table table-striped table-data-no-order">
+                                    <thead>
+                                        <tr>
+                                            <th width="60%" style="text-align:center;">Criteria</th>
+                                            <th width="20%" style="text-align:center;">Max Marks</th>
+                                            <th width="20%" style="text-align:center;">Marks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="edit-form-body">
+                                    </tbody>
+                                </table>
+                            </div>
+    
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+    
+            </div>
+        </div>
 
           <script type="text/javascript" src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
           <script type="text/javascript" src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
@@ -94,7 +186,37 @@
           <script type="text/javascript" src="../js/custom.js"></script>
           <script type="text/javascript" src="../js/data-table.js"></script>
     <script>
+    var connectionflag=false;
+    var checkNetConnection = function () {
+        $.ajax({
+                type: "post",
+                url: apiUrl+"checkconnection",
+                timeout: 10,
+                dataType: "json",
+                async:false,
+                error: function(jqXHR) { 
+                    connectionflag=false;
+                },
+                success: function() {
+                    connectionflag=true;
+                }
+            });
+    };
+
+
+    window.onbeforeunload = function() {
+        
+    }
+    function disableF5(e) { 
+        connectionflag=false;
+        checkNetConnection();
+        if(!connectionflag) {
+            if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault(); 
+        }
+        };
+
         $(document).ready(function() {
+            // localStorage.clear();
             var url_string = window.location.href
             var url = new URL(url_string);
             var eventId = url.searchParams.get("event");
@@ -112,33 +234,20 @@
                 url: action,
                 data: dataString,      
                 dataType: "json",
+                async:false,
                 success: function (response) {
                     var respData = response;
                     if(respData.status == false){
                         page_redirect('./index.html');
                     } 
                     else {
-                        if (typeof response.criteria !== 'undefined' && response.criteria !=='')
+                        if (typeof respData.criteria !== 'undefined' && respData.criteria !=='')
                         {
-                            var dataArray = [];
-                            dataArray[eventId] = [];
-                            dataArray[eventId]['criteria'] = [];
-                            $.each(response.criteria, function(i, d) { 
-                               
-                                alert(d);
-                                dataArray[eventId]['criteria'][i] =d;
-                            });
-                            //  console.log(JSON.stringify(dataArray));
-                             //dataArray[eventId]['criteria'] = response.criteria;
-                            // localStorage.setItem("dataArray", JSON.stringify(dataArray));
-                            // localStorage.dataArray = JSON.stringify(dataArray);
-                            // localStorage.dataArray = dataArray;
-                            // var storedDataArray= JSON.parse(localStorage.getItem("dataArray"));
-                          //  var storedDataArray= JSON.parse(localStorage.dataArray);
-                            // console.log('storedDataArray');
-                            // console.log(localStorage.dataArray);
+                            localStorage.setItem("criteria_"+eventId, JSON.stringify(respData.criteria));
+                            // var storedDataArray= JSON.parse(localStorage.getItem("criteria"+eventId));
+                            // console.log(storedDataArray);
                         }
-                        // localStorage.
+                        listJudgements();
                     }
                 },
                 error: function (data) {  
@@ -147,11 +256,320 @@
                 }
             });
 
+            $(document).on("keydown", disableF5);
+           
+            $(document).on('submit', '.form-new-judgment', function (e) {
+                e.preventDefault();
+                var form = this;
+                var eventId = $('#eventid').val();
+                var rollNo = $(form).find("input.rollNo").val();
+                var criteria_cnt = $('#criteria_cnt').val();
+                
+                if (localStorage.getItem("rollno_"+eventId)) {
+                    var rollNoArray = JSON.parse(localStorage.getItem("rollno_"+eventId));
+                } else {
+                    var rollNoArray =  []
+                }
+                
+                if ($.inArray(rollNo, rollNoArray) != -1)
+                {
+                    //roll no already exist
+                }
+                else {
+                    rollNoArray.push(rollNo); 
+
+                    // console.log(rollNoArray);
+                    var markArray = new Array();
+                    for (var i = 0; i < criteria_cnt; i++) {
+                        id = $("#criteria_id_"+i).val();
+                        mark = $("#mark_"+i).val();
+                        markArray[i] = {id: id,mark: mark };
+                        
+                    } 
+                    localStorage.removeItem("rollno_"+eventId);
+                    localStorage.setItem("rollno_"+eventId, JSON.stringify(rollNoArray));
+                    localStorage.setItem("mark_"+eventId+"_"+rollNo, JSON.stringify(markArray));
+                    localStorage.setItem("editmark_"+eventId+"_"+rollNo, JSON.stringify(markArray));
+                    i = parseInt($('#rawcount').val());
+                    ++i;
+                    var html = '<tr class="form-row'+rollNo+'">'+
+                                '<td>'+ i +'</td>'+
+                                '<td><span class="form-roll-col'+rollNo+'">'+rollNo+'</span></td>'+
+                                '<td><span class="form-action-col'+rollNo+'">'+
+                                    '<a href="javascript:void(0)" class="text-primary" onclick="editJudgmentForm('+rollNo+')" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Edit Event"><i class="fas fa-edit"> Edit</i></a></span>'+
+                                '</td>'+
+                            '</tr>';
+                            $('.list-form-body').append(html);
 
 
+
+                    connectionflag=false;
+                    checkNetConnection();
+                    if(connectionflag) {
+                        i=0;
+                        markDataArray =new Array();
+                        $.each(rollNoArray, function (key, val) {
+                            // console.log(val);
+                            if (localStorage.getItem("mark_"+eventId+"_"+val)) {
+                   
+                                ar= localStorage.getItem("mark_"+eventId+"_"+val); 
+                                markDataArray[i] = {rollNo: val, data:ar};
+                                ++i;
+                            }
+                        });
+
+
+                        var action = apiUrl+'judgementstore';
+                        var dataString = {eventId : eventId, rollNo: rollNoArray, marks:markDataArray};
+
+                        $.ajax({
+                            type: "post",
+                            url: action,
+                            data: dataString,      
+                            dataType: "json",
+                            success: function (response) {
+                                if(response.status == true){
+                                    invalidRollNo = response.invalidRollNo;
+                                    validRollNo = response.validRollNo;
+                                    if(invalidRollNo.length !== 0)
+                                    {
+                                        console.log(invalidRollNo.length)
+                                        console.log(validRollNo.length)
+                                    }
+                                    if(validRollNo.length !== 0)
+                                    {
+                                        $.each(validRollNo, function (key, val) {
+                                            localStorage.removeItem("mark_"+eventId+"_"+val);
+                                        });
+                                    }
+                                } 
+                                else {
+                                    
+                                }
+                            },
+                            error: function (data) {  
+                            // alert("Failed to connect!!!");
+                                return false;
+                            }
+                        });
+                    }
+                    else {
+                        // no connection
+                    }
+                }
+            });
+            $(document).on('submit', '.form-edit-judgment', function (e) {
+                e.preventDefault();
+                var form = this;
+                var eventId = $('#eventid').val();
+                var rollNo = $(form).find("input.editrollNo").val();
+                var currentRollno = $(form).find("input.currentRollno").val();
+                var criteria_cnt = $('#criteria_cnt').val();
+                
+                
+                if (localStorage.getItem("rollno_"+eventId)) {
+                    var rollNoArray = JSON.parse(localStorage.getItem("rollno_"+eventId));
+                } else {
+                    var rollNoArray =  []
+                }
+
+                if(currentRollno != rollNo)
+                {
+                    //check new roll no
+                    //if valid pull new rollno to rollNoArray
+                    rollNoArray.push(rollNo); 
+                }
+                
+                if ($.inArray(rollNo, rollNoArray) != -1) {
+alert()
+                    // console.log(rollNoArray);
+                    var markArray = new Array();
+                    for (var i = 0; i < criteria_cnt; i++) {
+                        id = $("#edit_criteria_id_"+i).val();
+                        mark = $("#edit_mark_"+i).val();
+                        markArray[i] = {id: id,mark: mark };
+                        
+                    } 
+
+                    if (localStorage.getItem("mark_"+eventId+"_"+currentRollno)) {
+                        localStorage.removeItem("mark_"+eventId+"_"+currentRollno);
+                    }
+                    if (localStorage.getItem("mark_"+eventId+"_"+rollNo)) {
+                        localStorage.removeItem("mark_"+eventId+"_"+rollNo);
+                    }
+                    localStorage.setItem("mark_"+eventId+"_"+rollNo, JSON.stringify(markArray));
+
+                    $(".form-row"+currentRollno).addClass("form-row"+rollNo).removeClass("form-row"+currentRollno);
+                    $(".form-roll-col"+currentRollno).addClass("form-roll-col"+rollNo).removeClass("form-roll-col"+currentRollno);
+                    $(".form-action-col"+currentRollno).addClass("form-action-col"+rollNo).removeClass("form-action-col"+currentRollno);
+
+                    $(".form-roll-col"+rollNo).html("");
+                    $(".form-action-col"+rollNo).html("");
+                    $(".form-roll-col"+rollNo).html(rollNo);
+                    
+                    var html = '<a href="javascript:void(0)" class="text-primary" onclick="editJudgmentForm('+rollNo+')" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Edit Event"><i class="fas fa-edit"> Edit</i></a>';
+                    $(".form-action-col"+rollNo).html(html);
+
+
+                    connectionflag=false;
+                    checkNetConnection();
+                    if(connectionflag) {
+                        i=0;
+                        markDataArray =new Array();
+                        $.each(rollNoArray, function (key, val) {
+                            // console.log(val);
+                            if (localStorage.getItem("mark_"+eventId+"_"+val)) {
+                   
+                                ar= localStorage.getItem("mark_"+eventId+"_"+val); 
+                                markDataArray[i] = {rollNo: val, data:ar};
+                                ++i;
+                            }
+                        });
+
+
+                        var action = apiUrl+'judgementstore';
+                        var dataString = {eventId : eventId, rollNo: rollNoArray, marks:markDataArray};
+
+                        $.ajax({
+                            type: "post",
+                            url: action,
+                            data: dataString,      
+                            dataType: "json",
+                            success: function (response) {
+                                if(response.status == true){
+                                    invalidRollNo = response.invalidRollNo;
+                                    validRollNo = response.validRollNo;
+                                    if(invalidRollNo.length !== 0)
+                                    {
+                                        console.log(invalidRollNo.length)
+                                        console.log(validRollNo.length)
+                                    }
+                                    if(validRollNo.length !== 0)
+                                    {
+                                        $.each(validRollNo, function (key, val) {
+                                            localStorage.removeItem("mark_"+eventId+"_"+val);
+                                        });
+                                    }
+                                } 
+                                else {
+                                    
+                                }
+                            },
+                            error: function (data) {  
+                            // alert("Failed to connect!!!");
+                                return false;
+                            }
+                        });
+                    }
+                    else {
+                        // no connection
+                    }
+                }
+            });
+            
         });
+        function addJudgmentForm() {
+            var eventId = $('#eventid').val();
+            var criteriaArray= JSON.parse(localStorage.getItem("criteria_"+eventId));
+            var cnt =0;
+            $.each(criteriaArray, function (key, val) {
+                
+                var html = '<tr class="form-row'+cnt+'">'+
+                                '<td align="center" width="60%" style="text-align:center;">'+ val.criteria+'</td>'+
+                                '<td align="center" width="20%" style="text-align:center;">'+val.max_mark+
+                                '</td>'+
+                                '<td width="20%" style="text-align:center;">'+
+                                    '<input type="hidden" name="criteria_id_'+cnt+'" id="criteria_id_'+cnt+'" value='+val.id+' />'+
+                                    '<input type="number" min=0 max='+val.max_mark+' name="mark_'+cnt+'" id="mark_'+cnt+'" style="width:70%;" required />'+
+                                '</td>'+
+                            '</tr>';
+                $('.form-body').append(html);
+                ++cnt;
+            });
+            
+            $('#criteria_cnt').val(cnt);
+            $('#addJudgmentDiv').modal('show');
+        } 
+        function editJudgmentForm(rollNo) {
+            var eventId = $('#eventid').val();
+            var criteriaArray= JSON.parse(localStorage.getItem("criteria_"+eventId));
+            var cnt =0;
+            $('.editrollNo').val(rollNo);
+            $('#currentRollno').val(rollNo);
+            
+            var markList= JSON.parse(localStorage.getItem("editmark_"+eventId+"_"+rollNo));
+            // console.log(markList);
+            $('.edit-form-body').html("");
+            $.each(criteriaArray, function (key, val) {
+                score = '';
+                $.each(markList, function (key1, val1) {
+                    markCriteraid = val1.id;
+                    if(val.id == markCriteraid) {
+                        score = val1.mark;
+                    }
+                });
+                var html = '<tr class="form-row'+cnt+'">'+
+                                '<td align="center" width="60%" style="text-align:center;">'+ val.criteria+'</td>'+
+                                '<td align="center" width="20%" style="text-align:center;">'+val.max_mark+
+                                '</td>'+
+                                '<td width="20%" style="text-align:center;">'+
+                                    '<input type="hidden" name="edit_criteria_id_'+cnt+'" id="edit_criteria_id_'+cnt+'" value='+val.id+' />'+
+                                    '<input type="number" min=0 max='+val.max_mark+' name="edit_mark_'+cnt+'" id="edit_mark_'+cnt+'" value='+score+' style="width:70%;" required />'+
+                                '</td>'+
+                            '</tr>';
+                $('.edit-form-body').append(html);
+                ++cnt;
+            });
+            
+            $('#criteria_cnt').val(cnt);
+            $('#editJudgmentDiv').modal('show');
+        }
        
+         function listJudgements(){
+            var eventId = $('#eventid').val();
+            var action = apiUrl+'judgementlist';
+            var dataString = {eventid : eventId};
+            $.ajax({
+                type: "post",
+                url: action,
+                data: dataString,      
+                dataType: "json",
+                success: function (response) {
+                    var respData = response;
+                    if(respData.status == true){
+                        // console.log(respData.data);
+                        var i = 0;
+                        var rollNoArray =  []
+                        $.each(respData.data, function (key, val) {
+                            // console.log(val.judgement);
+                            ++i;
+                            rollNo = val.roll_no;
+                            rollNoArray.push(rollNo);
+                            localStorage.setItem("editmark_"+eventId+"_"+rollNo, val.judgement);
 
+                            var html = '<tr class="form-row'+rollNo+'">'+
+                                '<td>'+ i +'</td>'+
+                                '<td><span class="form-roll-col'+rollNo+'">'+rollNo+'</span></td>'+
+                                '<td><span class="form-action-col'+rollNo+'">'+
+                                    '<a href="javascript:void(0)" class="text-primary" onclick="editJudgmentForm('+rollNo+')" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Edit Event"><i class="fas fa-edit"> Edit</i></a></span>'+
+                                '</td>'+
+                            '</tr>';
+                            $('.list-form-body').append(html);
+                        });
+                        localStorage.setItem("rollno_"+eventId, JSON.stringify(rollNoArray));
+                        $('#rawcount').val(i);
+                    } 
+                    else {
+                        
+                    }
+                },
+                error: function (data) {  
+                // alert("Failed to connect!!!");
+                    return false;
+                }
+            });
+         }
+        
     </script>
 </body>
 

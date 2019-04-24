@@ -219,13 +219,15 @@ jQuery(document).ready(function ($) {
                           manageJudges = '<a href="javascript:void(0)" class="text-info" onclick="manageJudgesPop('+data+',\''+editurl+'\' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Manage Judges"><i class="fas fa-user-secret"></i></a> ';
                           addCriteria = '<a href="./judge-criteria.html?event='+data+'&name='+row['event_name']+'" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Judging Creteria"><i class="fas fa-list-alt"></i></a> ';
 
+                          uploadSheets = '<a href="javascript:void(0)" class="text-info" onclick="uploadSheetsPop('+data+' )" data-backdrop="static" data-keyboard="false" data-toggle="tooltip" data-placement="top" data-original-title="Upload File"><i class="fas fa-upload"></i></a> ';
+
                           if(currentUserRole === '1')
                             {
-                                return edit+' '+deletefun+ '&nbsp;&nbsp;&nbsp;'+addContestant+contestantlist+'&nbsp;&nbsp;&nbsp;'+manageJudges+addCriteria;
+                                return edit+' '+deletefun+ '&nbsp;&nbsp;&nbsp;'+addContestant+contestantlist+'&nbsp;&nbsp;&nbsp;'+manageJudges+addCriteria+'&nbsp;&nbsp;&nbsp;'+uploadSheets;
                             }
                             else if(currentUserRole === '2')
                             {
-                                return addContestant+contestantlist+'&nbsp;&nbsp;&nbsp;'+manageJudges+addCriteria;
+                                return addContestant+contestantlist+'&nbsp;&nbsp;&nbsp;'+manageJudges+addCriteria+'&nbsp;&nbsp;&nbsp;'+uploadSheets;
                             }
                             else {
                                 return '';
@@ -437,7 +439,7 @@ jQuery(document).ready(function ($) {
 
     //Judgement List
      
-    if ($("#judgementlist-table").length) {
+    if ($("#judgementlist-table1111").length) {
         $(document).ready(function () { 
             console.log('table');
             var eventid= $('#eventid').val();

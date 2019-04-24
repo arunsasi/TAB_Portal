@@ -13,3 +13,23 @@ ALTER TABLE `judgement_criteria` ADD `status` INT NOT NULL DEFAULT '1' COMMENT '
 ALTER TABLE `event_judges` CHANGE `prilims` `prelims` INT(11) NOT NULL;
 
 ALTER TABLE `score_card` CHANGE `created_at` `created_at` DATETIME NOT NULL;
+
+23/04/2019 chinnu
+CREATE TABLE `attachments` (
+  `id` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `filename` varchar(250) NOT NULL,
+  `file_type` varchar(50) NOT NULL,
+  `attachment_type` int(11) NOT NULL COMMENT '1-judgement sheet, 2-consolidated sheet',
+  `prilims` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+ALTER TABLE `attachments`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `attachments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
