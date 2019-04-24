@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../css/datatables.min.css" />
     <link rel="stylesheet" href="../assets/vendor/daterangepicker/daterangepicker.css" />
     <link rel="stylesheet" href="../assets/vendor/multi-select/css/multi-select.css">
+    <link href="../css/uploadfile.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -358,6 +359,46 @@
         </div>
     </div>
 
+    <div class="modal fade" id="uploadJudgeSheetDiv" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Upload Judgement Sheets</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="uploadJudgeSheetForm" class="uploadJudgeSheetForm" action="updatejudgelist" method="post"
+                        data-parsley-validate>
+                        <input type="hidden" id='uploadeventid' name="eventid" value="">
+                        <input type="hidden" id='haveprelims' name="haveprelims" value="">
+                        <div class="uploadalert-msg" role="alert"></div>
+                        <div class="modal-body">
+                            <div class="form-row">
+                                <div class="form-group col-md-6 prelims-div">
+                                <label>Have Prelims</label>
+                                <select id="uploadprelims" name="prelims" class="form-control">
+                                    <option value="0" selected>No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                                <div class="form-group col-md-12 prelims-judges-div">
+                                    <label>Judgement Sheets</label>
+                                    <div id="advancedUpload">Upload</div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+    
+            </div>
+        </div>
+
     <script type="text/javascript" src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script type="text/javascript" src="../assets/vendor/slimscroll/jquery.slimscroll.js"></script>
@@ -373,6 +414,7 @@
     <script type="text/javascript" src="../js/common.js"></script>
     <script type="text/javascript" src="../js/custom.js"></script>
     <script type="text/javascript" src="../js/data-table.js"></script>
+    <script src="../js/jquery.uploadfile.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#addForm').parsley();
@@ -405,6 +447,31 @@
             });
             getCoordinatorList('addModelDiv')
 
+            $(document).on('submit', '.uploadJudgeSheetForm', function (e) {
+                e.preventDefault();
+                uploadObj.startUpload();
+            });
+            
+            var uploadObj = $("#advancedUpload").uploadFile({
+                url:apiUrl+"uploadfile",
+                multiple:false,
+                autoSubmit:false,
+                fileName:"myfile",
+                allowedTypes:"gif,jpg,png,jpeg,xls,xlsx,doc,docx,pdf",
+                maxFileSize:1024*1024*20,
+            	maxFileCount:15,
+                dynamicFormData: function()
+                {
+                    var data ={ id:$("#uploadeventid").val(),prelims:$("#uploadprelims").val(),attype:1}
+                    return data;
+                },
+                showStatusAfterSuccess:false,
+                onSuccess:function(files,data,xhr)
+                {
+                    // check_upload();
+                }
+
+                });
         });
         function addContestantModelForm(eventId) {
             $('#addContestantForm').find('input[name="eventid"]').val(eventId);
@@ -494,6 +561,25 @@
             });
 }
 
+        function uploadSheetsPop(eventId) {
+            $('#uploadJudgeSheetForm').find('input[name="eventid"]').val(eventId);
+            
+
+
+
+            $('#uploadJudgeSheetDiv').modal('show');
+        }
+        function check_upload()
+        {
+            var class_length = $('.ajax-file-upload-statusbar').length;
+            if(class_length == 1)
+            {
+                $(".uploadalert-msg").addClass('alert');
+                $("uploadalert-msg").addClass('alert-success');
+                $("uploadalert-msg span").html('Blog added successfully.');
+                $('uploadalert-msg').delay(5000).fadeOut(3600);
+            }
+        }
     </script>
 </body>
 

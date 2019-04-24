@@ -581,6 +581,20 @@ class Event extends CI_Controller
         $result = array('status' => true,'data' => $data);
         echo json_encode($result);
     }
+
+    /**
+     * Upload Judgement sheets
+     * @author          Chinnu
+     * @since           Version 1.0.0
+     * @param NULL
+     * @return string
+     * Date::            23-04-2019
+     */
+    public function uploadfile()
+    {
+        $this->load->helper('upload');
+        upload();
+    }
 }
 
 /* End of file User Controller*/
